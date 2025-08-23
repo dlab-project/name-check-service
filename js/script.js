@@ -33,12 +33,71 @@ function updateStudentIdDisplay() {
     }
 }
 
+// 출석 상태에 따른 버튼 표시/숨김 처리
+async function updateButtonVisibility() {
+    if (!studentId) {
+        // 학번이 없으면 모든 버튼 숨김
+        document.getElementById('checkinBtn').style.display = 'none';
+        document.getElementById('checkoutBtn').style.display = 'none';
+        return;
+    }
+
+    try {
+        // 한국 시간으로 변환 (UTC+9)
+        const currentTime = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+        const today = currentTime.toISOString().split('T')[0];
+        
+        // 오늘의 출석 기록 확인
+        const { data: todayCheck, error: checkError } = await supabase
+            .from('check')
+            .select('*')
+            .eq('student_id', studentId)
+            .gte('checkin_time', today + 'T00:00:00.000Z')
+            .lt('checkin_time', today + 'T23:59:59.999Z');
+            
+        if (checkError) {
+            console.error('출석 상태 확인 오류:', checkError);
+            return;
+        }
+
+        const checkinBtn = document.getElementById('checkinBtn');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+
+        if (!todayCheck || todayCheck.length === 0) {
+            // 오늘 출석하지 않음 - 출석 체크 버튼만 표시
+            checkinBtn.style.display = 'inline-block';
+            checkoutBtn.style.display = 'none';
+        } else {
+            // 오늘 출석함 - 퇴실 체크 여부에 따라 결정
+            const todayRecord = todayCheck[0];
+            if (todayRecord.checkout_time === null) {
+                // 출석했지만 퇴실하지 않음 - 퇴실 체크 버튼만 표시
+                checkinBtn.style.display = 'none';
+                checkoutBtn.style.display = 'inline-block';
+            } else {
+                // 출석하고 퇴실도 함 - 모든 버튼 숨김
+                checkinBtn.style.display = 'none';
+                checkoutBtn.style.display = 'none';
+                timeDisplay.innerHTML = `
+                    <div style="color: blue;"><strong>✅ 오늘의 출석과 퇴실이 모두 완료되었습니다.</strong></div>
+                    <div style="margin-bottom: 10px;"><strong>학번:</strong> ${studentId}</div>
+                    <div style="margin-bottom: 10px;"><strong>출석 시간:</strong> ${new Date(todayRecord.checkin_time).toLocaleString('ko-KR')}</div>
+                    <div><strong>퇴실 시간:</strong> ${new Date(todayRecord.checkout_time).toLocaleString('ko-KR')}</div>
+                `;
+            }
+        }
+    } catch (error) {
+        console.error('버튼 표시 상태 업데이트 오류:', error);
+    }
+}
+
 // 페이지 로드 시 로컬 스토리지에서 학번 불러오기
 document.addEventListener('DOMContentLoaded', function() {
     const savedStudentId = getStudentIdFromStorage();
     if (savedStudentId) {
         studentId = savedStudentId;
         updateStudentIdDisplay();
+        updateButtonVisibility(); // 출석 상태에 따른 버튼 표시 업데이트
     }
     
 
@@ -78,6 +137,7 @@ document.getElementById('studentIdSubmit').addEventListener('click', function() 
     saveStudentIdToStorage(studentId);
     hideStudentIdModal();
     updateStudentIdDisplay();
+    updateButtonVisibility(); // 학번 입력 후 버튼 표시 상태 업데이트
 });
 
 // 취소 버튼 이벤트 리스너
@@ -159,6 +219,7 @@ checkinBtn.addEventListener('click', async function() {
                 <div><strong>출석 시간:</strong> ${checkinTime}</div>
             `;
             alert('이미 오늘 출석한 기록이 있습니다.');
+            updateButtonVisibility(); // 버튼 표시 상태 업데이트
             return;
         }
         // 시간 문자열 직접 생성
@@ -188,6 +249,9 @@ checkinBtn.addEventListener('click', async function() {
         `;
         alert('출석체크가 완료되었습니다!');
         console.log('출석 기록 저장 성공:', data);
+        
+        // 출석 완료 후 버튼 표시 상태 업데이트
+        updateButtonVisibility();
         
     } catch (error) {
         console.error('출석체크 오류:', error);
@@ -263,6 +327,10 @@ async function handleCheckout() {
         `;
         alert('퇴실체크가 완료되었습니다!');
         console.log('퇴실 시간 저장 성공:', data);
+        
+        // 퇴실 완료 후 버튼 표시 상태 업데이트
+        updateButtonVisibility();
+        
     } catch (error) {
         console.error('퇴실체크 오류:', error);
         timeDisplay.innerHTML = `
@@ -272,6 +340,5 @@ async function handleCheckout() {
     } finally {
         checkoutBtn.disabled = false;
         checkoutBtn.textContent = '퇴실체크';
-
     }
 }
