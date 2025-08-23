@@ -81,30 +81,39 @@ checkinBtn.addEventListener('click', async function() {
     try {
         const now = new Date();
         
+        // 한국 시간으로 변환 (UTC+9)
+        const koreaNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
         
-    // 한국 시간으로 변환 (UTC+9)
-    const koreaNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-    // 현재 날짜의 시작 시간(오후 4시)과 종료 시간(다음날 0시) 설정 (한국 기준)
-    const todayStart = new Date(koreaNow);
-    todayStart.setHours(16, 0, 0, 0);
-    const todayEnd = new Date(koreaNow);
-    todayEnd.setHours(24, 0, 0, 0);
+        // 오늘 날짜만 추출 (시간은 무시하고 날짜만 비교)
+        const today = koreaNow.toISOString().split('T')[0]; // YYYY-MM-DD 형식
         
-        // 중복 출석 체크
+        // 중복 출석 체크 - 날짜만으로 판별
         const { data: existingCheck, error: checkError } = await supabase
             .from('check')
             .select('*')
             .eq('student_id', studentId)
-            .gte('checkin_time', todayStart.toISOString())
-            .lt('checkin_time', todayEnd.toISOString());
+            .gte('checkin_time', today + 'T00:00:00.000Z')
+            .lt('checkin_time', today + 'T23:59:59.999Z');
             
-        if (checkError) throw checkError;
+        if (checkError) {
+            console.error('중복 체크 오류:', checkError);
+            throw checkError;
+        }
+        
+        // 중복 체크 결과 로그 출력 (디버깅용)
+        console.log('중복 체크 결과:', existingCheck);
+        console.log('검색 범위:', {
+            date: today,
+            studentId: studentId
+        });
         
         if (existingCheck && existingCheck.length > 0) {
+            const existingRecord = existingCheck[0];
+            const checkinTime = new Date(existingRecord.checkin_time).toLocaleString('ko-KR');
             timeDisplay.innerHTML = `
                 <div style="color: orange;"><strong>⚠️ 이미 오늘 출석한 기록이 있습니다.</strong></div>
                 <div style="margin-bottom: 10px;"><strong>학번:</strong> ${studentId}</div>
-                <div><strong>출석 시간:</strong> ${existingCheck[0].checkin_time}</div>
+                <div><strong>출석 시간:</strong> ${checkinTime}</div>
             `;
             alert('이미 오늘 출석한 기록이 있습니다.');
             return;
@@ -174,17 +183,16 @@ async function handleCheckout(checkoutStudentId) {
             second: '2-digit'
         });
 
-    const todayStart = new Date(koreaNow);
-    todayStart.setHours(0, 0, 0, 0);
-    const todayEnd = new Date(koreaNow);
-    todayEnd.setHours(23, 59, 59, 999);
-        // 오늘의 출석 기록 확인
+        // 오늘 날짜만 추출 (시간은 무시하고 날짜만 비교)
+        const today = koreaNow.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+        
+        // 오늘의 출석 기록 확인 - 날짜만으로 판별
         const { data: todayCheck, error: checkError } = await supabase
             .from('check')
             .select('*')
             .eq('student_id', checkoutStudentId)
-            .gte('checkin_time', todayStart.toISOString())
-            .lt('checkin_time', todayEnd.toISOString());
+            .gte('checkin_time', today + 'T00:00:00.000Z')
+            .lt('checkin_time', today + 'T23:59:59.999Z');
         if (checkError) throw checkError;
         if (!todayCheck || todayCheck.length === 0) {
             throw new Error('오늘의 출석 기록이 없습니다.');
@@ -198,8 +206,8 @@ async function handleCheckout(checkoutStudentId) {
             .from('check')
             .update({ checkout_time: koreaNow.toISOString() })
             .eq('student_id', checkoutStudentId)
-            .gte('checkin_time', todayStart.toISOString())
-            .lt('checkin_time', todayEnd.toISOString());
+            .gte('checkin_time', today + 'T00:00:00.000Z')
+            .lt('checkin_time', today + 'T23:59:59.999Z');
         if (error) throw error;
         timeDisplay.innerHTML = `
             <div style="margin-bottom: 10px; color: green;"><strong>✅ 퇴실체크가 완료되었습니다!</strong></div>
