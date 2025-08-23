@@ -9,8 +9,17 @@
 <body>
     <div class="container">
         <h1>야간자율학습 출석체크</h1>
+        
+        <!-- 학번 표시 영역 추가 -->
+        <div id="studentIdDisplay" style="display: none; margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; text-align: center;">
+            <strong>현재 학번: <span id="currentStudentId"></span></strong>
+        </div>
+        
         <button id="checkinBtn">출석체크</button>
         <button id="checkoutBtn">퇴실체크</button>
+        
+
+        
         <div id="timeDisplay"></div>
     </div>
         <!-- 학번 입력 모달 -->

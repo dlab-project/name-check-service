@@ -4,17 +4,60 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // 학번 저장 변수
 let studentId = '';
-let checkoutStudentId = '';
-let isCheckoutMode = false;
 
+
+
+// 로컬 스토리지 관련 함수들
+function saveStudentIdToStorage(id) {
+    localStorage.setItem('studentId', id);
+}
+
+function getStudentIdFromStorage() {
+    return localStorage.getItem('studentId');
+}
+
+function removeStudentIdFromStorage() {
+    localStorage.removeItem('studentId');
+}
+
+// 학번 표시 업데이트 함수
+function updateStudentIdDisplay() {
+    const studentIdDisplay = document.getElementById('studentIdDisplay');
+    const currentStudentIdSpan = document.getElementById('currentStudentId');
+    
+    if (studentId && studentIdDisplay && currentStudentIdSpan) {
+        currentStudentIdSpan.textContent = studentId;
+        studentIdDisplay.style.display = 'block';
+    } else if (studentIdDisplay) {
+        studentIdDisplay.style.display = 'none';
+    }
+}
+
+// 페이지 로드 시 로컬 스토리지에서 학번 불러오기
+document.addEventListener('DOMContentLoaded', function() {
+    const savedStudentId = getStudentIdFromStorage();
+    if (savedStudentId) {
+        studentId = savedStudentId;
+        updateStudentIdDisplay();
+    }
+    
+
+});
 
 // 학번 입력 모달 관련 코드
 function showStudentIdModal() {
     document.getElementById('studentIdModal').style.display = 'flex';
     document.getElementById('studentIdInput').value = '';
     document.getElementById('studentIdError').style.display = 'none';
-    // 모달 제목 변경
-    document.querySelector('#studentIdModal h2').textContent = isCheckoutMode ? '퇴실 학번 입력' : '학번 입력';
+    
+    // 기존 학번이 있으면 표시
+    if (studentId) {
+        document.getElementById('studentIdInput').value = studentId;
+        document.getElementById('studentIdInput').select();
+    }
+    
+    // 모달 제목 설정
+    document.querySelector('#studentIdModal h2').textContent = '학번 입력';
 }
 
 function hideStudentIdModal() {
@@ -30,14 +73,11 @@ document.getElementById('studentIdSubmit').addEventListener('click', function() 
         document.getElementById('studentIdError').style.display = 'block';
         return;
     }
-    if (isCheckoutMode) {
-        checkoutStudentId = input.trim();
-        hideStudentIdModal();
-        handleCheckout(checkoutStudentId);
-    } else {
-        studentId = input.trim();
-        hideStudentIdModal();
-    }
+    studentId = input.trim();
+    // 로컬 스토리지에 저장
+    saveStudentIdToStorage(studentId);
+    hideStudentIdModal();
+    updateStudentIdDisplay();
 });
 
 document.getElementById('studentIdInput').addEventListener('keydown', function(e) {
@@ -161,11 +201,16 @@ checkinBtn.addEventListener('click', async function() {
 const checkoutBtn = document.getElementById('checkoutBtn');
 
 checkoutBtn.addEventListener('click', function() {
-    isCheckoutMode = true;
-    showStudentIdModal();
+    if (!studentId || studentId.trim() === '') {
+        alert('먼저 학번을 입력해주세요.');
+        showStudentIdModal();
+        return;
+    }
+    // 스토리지에 있는 학번으로 퇴실체크 처리
+    handleCheckout();
 });
 
-async function handleCheckout(checkoutStudentId) {
+async function handleCheckout() {
     checkoutBtn.disabled = true;
     checkoutBtn.textContent = '퇴실체크 중...';
     try {
@@ -187,7 +232,7 @@ async function handleCheckout(checkoutStudentId) {
         const { data: todayCheck, error: checkError } = await supabase
             .from('check')
             .select('*')
-            .eq('student_id', checkoutStudentId)
+            .eq('student_id', studentId)
             .gte('checkin_time', today + 'T00:00:00.000Z')
             .lt('checkin_time', today + 'T23:59:59.999Z');
         if (checkError) throw checkError;
@@ -202,13 +247,13 @@ async function handleCheckout(checkoutStudentId) {
         const { data, error } = await supabase
             .from('check')
             .update({ checkout_time: currentTime.toISOString() })
-            .eq('student_id', checkoutStudentId)
+            .eq('student_id', studentId)
             .gte('checkin_time', today + 'T00:00:00.000Z')
             .lt('checkin_time', today + 'T23:59:59.999Z');
         if (error) throw error;
         timeDisplay.innerHTML = `
             <div style="margin-bottom: 10px; color: green;"><strong>✅ 퇴실체크가 완료되었습니다!</strong></div>
-            <div style="margin-bottom: 10px;"><strong>학번:</strong> ${checkoutStudentId}</div>
+            <div style="margin-bottom: 10px;"><strong>학번:</strong> ${studentId}</div>
             <div><strong>퇴실 시간:</strong> ${currentTimeString}</div>
         `;
         alert('퇴실체크가 완료되었습니다!');
@@ -222,6 +267,6 @@ async function handleCheckout(checkoutStudentId) {
     } finally {
         checkoutBtn.disabled = false;
         checkoutBtn.textContent = '퇴실체크';
-        isCheckoutMode = false;
+
     }
 }
