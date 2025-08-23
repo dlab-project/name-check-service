@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>야간자율학습 출석체크</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>야간자율학습 출석체크</h1>
+        <button id="checkinBtn">출석체크</button>
+        <button id="checkoutBtn">퇴실체크</button>
+        <div id="timeDisplay"></div>
+    </div>
+        <!-- 학번 입력 모달 -->
+        <div id="studentIdModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h2>학번 입력</h2>
+                <input type="text" id="studentIdInput" placeholder="학번을 입력하세요" />
+                <div id="studentIdError" style="color:red; margin-top:8px; display:none;"></div>
+                <button id="studentIdSubmit">확인</button>
+            </div>
+        </div>
+    
+    <!-- Supabase CDN -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
