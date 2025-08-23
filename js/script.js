@@ -81,11 +81,6 @@ checkinBtn.addEventListener('click', async function() {
     try {
         const now = new Date();
         
-    // 출석 가능 시간 체크 (16:00 ~ 23:59)
-    // const hour = now.getHours();
-    // if (hour < 16 || hour >= 24) {
-    //     throw new Error('출석 가능 시간이 아닙니다. (오후 4시 ~ 오후 12시)');
-    // }
         
     // 한국 시간으로 변환 (UTC+9)
     const koreaNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -178,15 +173,7 @@ async function handleCheckout(checkoutStudentId) {
             minute: '2-digit',
             second: '2-digit'
         });
-    // 현재 날짜의 시작 시간(오후 4시)과 종료 시간(다음날 0시) 설정 (한국 기준)
-    // const todayStart = new Date(koreaNow);
-    // if (koreaNow.getHours() < 16) {
-    //     todayStart.setDate(todayStart.getDate() - 1);
-    // }
-    // todayStart.setHours(16, 0, 0, 0);
-    // const todayEnd = new Date(todayStart);
-    // todayEnd.setHours(24, 0, 0, 0);
-    // 시간 제한 없이 오늘 날짜 기준으로만 퇴실 체크
+
     const todayStart = new Date(koreaNow);
     todayStart.setHours(0, 0, 0, 0);
     const todayEnd = new Date(koreaNow);
