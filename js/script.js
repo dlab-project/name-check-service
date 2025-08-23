@@ -79,13 +79,11 @@ checkinBtn.addEventListener('click', async function() {
     checkinBtn.textContent = '출석체크 중...';
     
     try {
-        const now = new Date();
-        
         // 한국 시간으로 변환 (UTC+9)
-        const koreaNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+        const currentTime = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
         
-        // 오늘 날짜만 추출 (시간은 무시하고 날짜만 비교)
-        const today = koreaNow.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+        // 오늘 날짜만 추출 (YYYY-MM-DD 형식)
+        const today = currentTime.toISOString().split('T')[0];
         
         // 중복 출석 체크 - 날짜만으로 판별
         const { data: existingCheck, error: checkError } = await supabase
@@ -118,21 +116,21 @@ checkinBtn.addEventListener('click', async function() {
             alert('이미 오늘 출석한 기록이 있습니다.');
             return;
         }
-        const currentTime = now.toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
+        // 시간 문자열 직접 생성
+        const year = currentTime.getUTCFullYear();
+        const month = String(currentTime.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(currentTime.getUTCDate()).padStart(2, '0');
+        const hour = String(currentTime.getUTCHours()).padStart(2, '0');
+        const minute = String(currentTime.getUTCMinutes()).padStart(2, '0');
+        const second = String(currentTime.getUTCSeconds()).padStart(2, '0');
+        const currentTimeString = `${year}. ${month}. ${day}. ${hour}:${minute}:${second}`;
         // Supabase에 출석 데이터 저장
         const { data, error } = await supabase
             .from('check')
             .insert([
                 {
                     student_id: studentId,
-                    checkin_time: koreaNow.toISOString()
+                    checkin_time: currentTime.toISOString()
                 }
             ]);
         if (error) {
@@ -141,7 +139,7 @@ checkinBtn.addEventListener('click', async function() {
         timeDisplay.innerHTML = `
             <div style="margin-bottom: 10px; color: green;"><strong>✅ 출석체크가 완료되었습니다!</strong></div>
             <div style="margin-bottom: 10px;"><strong>학번:</strong> ${studentId}</div>
-            <div><strong>출석 시간:</strong> ${currentTime}</div>
+            <div><strong>출석 시간:</strong> ${currentTimeString}</div>
         `;
         alert('출석체크가 완료되었습니다!');
         console.log('출석 기록 저장 성공:', data);
@@ -171,20 +169,19 @@ async function handleCheckout(checkoutStudentId) {
     checkoutBtn.disabled = true;
     checkoutBtn.textContent = '퇴실체크 중...';
     try {
-        const now = new Date();
         // 한국 시간으로 변환 (UTC+9)
-        const koreaNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-        const currentTime = koreaNow.toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
+        const currentTime = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+        // 시간 문자열 직접 생성
+        const year = currentTime.getUTCFullYear();
+        const month = String(currentTime.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(currentTime.getUTCDate()).padStart(2, '0');
+        const hour = String(currentTime.getUTCHours()).padStart(2, '0');
+        const minute = String(currentTime.getUTCMinutes()).padStart(2, '0');
+        const second = String(currentTime.getUTCSeconds()).padStart(2, '0');
+        const currentTimeString = `${year}. ${month}. ${day}. ${hour}:${minute}:${second}`;
 
-        // 오늘 날짜만 추출 (시간은 무시하고 날짜만 비교)
-        const today = koreaNow.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+        // 오늘 날짜만 추출 (YYYY-MM-DD 형식)
+        const today = currentTime.toISOString().split('T')[0];
         
         // 오늘의 출석 기록 확인 - 날짜만으로 판별
         const { data: todayCheck, error: checkError } = await supabase
@@ -204,7 +201,7 @@ async function handleCheckout(checkoutStudentId) {
         // 퇴실 시간 업데이트
         const { data, error } = await supabase
             .from('check')
-            .update({ checkout_time: koreaNow.toISOString() })
+            .update({ checkout_time: currentTime.toISOString() })
             .eq('student_id', checkoutStudentId)
             .gte('checkin_time', today + 'T00:00:00.000Z')
             .lt('checkin_time', today + 'T23:59:59.999Z');
@@ -212,7 +209,7 @@ async function handleCheckout(checkoutStudentId) {
         timeDisplay.innerHTML = `
             <div style="margin-bottom: 10px; color: green;"><strong>✅ 퇴실체크가 완료되었습니다!</strong></div>
             <div style="margin-bottom: 10px;"><strong>학번:</strong> ${checkoutStudentId}</div>
-            <div><strong>퇴실 시간:</strong> ${currentTime}</div>
+            <div><strong>퇴실 시간:</strong> ${currentTimeString}</div>
         `;
         alert('퇴실체크가 완료되었습니다!');
         console.log('퇴실 시간 저장 성공:', data);
