@@ -80,6 +80,11 @@ document.getElementById('studentIdSubmit').addEventListener('click', function() 
     updateStudentIdDisplay();
 });
 
+// 취소 버튼 이벤트 리스너
+document.getElementById('studentIdCancel').addEventListener('click', function() {
+    hideStudentIdModal();
+});
+
 document.getElementById('studentIdInput').addEventListener('keydown', function(e) {
     // 숫자(0~9), 백스페이스, 탭, 방향키, 엔터만 허용
     if (
