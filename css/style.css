@@ -7,7 +7,7 @@
     padding: 10px 24px;
     font-size: 18px;
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: 20px; /* 간격 증가 */
     width: 160px;
     box-sizing: border-box;
 }
@@ -31,6 +31,67 @@
 #checkoutBtn:hover {
     background: #b71c1c;
 }
+
+/* 하단 고정 버튼 영역 */
+.fixed-bottom-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 16px 20px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 100;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* 하단 버튼들을 위한 여백 추가 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f4f6fb;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 100px; /* 하단 고정 버튼 영역만큼 여백 추가 */
+}
+
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 32px 24px;
+    text-align: center;
+    margin-bottom: 120px; /* 하단 고정 버튼 영역만큼 여백 추가 */
+}
+
+h1 {
+    color: #2d3a4b;
+    margin-bottom: 30px;
+}
+
+#attendanceBtn {
+    background: #4f8cff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 15px 30px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 20px;
+}
+
+#attendanceBtn:hover {
+    background: #346fd1;
+}
+
+#timeDisplay {
+    font-size: 16px;
+    color: #2d3a4b;
+    margin-top: 20px;
+}
+
 /* 학번 입력 모달 스타일 */
 .modal {
     position: fixed;
@@ -71,46 +132,149 @@
 .modal-content button:hover {
     background: #1565c0;
 }
-body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background: #f4f6fb;
-    margin: 0;
-    padding: 0;
+
+/* 모바일 반응형 스타일 */
+@media screen and (max-width: 768px) {
+    .container {
+        margin: 20px 16px;
+        padding: 24px 16px;
+        border-radius: 8px;
+        margin-bottom: 120px; /* 하단 고정 버튼 영역만큼 여백 추가 */
+    }
+    
+    h1 {
+        font-size: 24px;
+        margin-bottom: 24px;
+    }
+    
+    #checkinBtn,
+    #checkoutBtn {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 16px; /* 버튼 간격 증가 */
+        padding: 16px 24px;
+        font-size: 16px;
+        min-height: 48px; /* 터치 친화적인 최소 높이 */
+    }
+    
+    #attendanceBtn {
+        width: 100%;
+        padding: 16px 24px;
+        font-size: 16px;
+        min-height: 48px;
+    }
+    
+    #timeDisplay {
+        font-size: 14px;
+        margin-top: 16px;
+    }
+    
+    .modal-content {
+        margin: 16px;
+        padding: 24px 16px;
+        min-width: auto;
+        width: calc(100% - 32px);
+        max-width: 400px;
+    }
+    
+    .modal-content h2 {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+    
+    .modal-content input {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        margin-top: 16px;
+        box-sizing: border-box;
+    }
+    
+    .modal-content button {
+        padding: 12px 20px;
+        font-size: 16px;
+        min-height: 44px;
+        margin: 8px 4px;
+    }
+    
+    #studentIdDisplay {
+        margin: 8px 0;
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    /* 모바일 하단 고정 버튼 영역 */
+    .fixed-bottom-buttons {
+        padding: 12px 16px;
+    }
 }
 
-.container {
-    max-width: 600px;
-    margin: 40px auto;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 32px 24px;
-    text-align: center;
+/* 작은 모바일 화면 (320px ~ 480px) */
+@media screen and (max-width: 480px) {
+    .container {
+        margin: 16px 12px;
+        padding: 20px 12px;
+        margin-bottom: 120px;
+    }
+    
+    h1 {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+    
+    #checkinBtn,
+    #checkoutBtn,
+    #attendanceBtn {
+        padding: 14px 20px;
+        font-size: 15px;
+        min-height: 44px;
+        margin-bottom: 20px; /* 작은 화면에서도 적절한 간격 */
+    }
+    
+    .modal-content {
+        margin: 12px;
+        padding: 20px 12px;
+        width: calc(100% - 24px);
+    }
+    
+    .modal-content h2 {
+        font-size: 18px;
+    }
+    
+    .modal-content input {
+        padding: 10px;
+        font-size: 15px;
+    }
+    
+    .modal-content button {
+        padding: 10px 16px;
+        font-size: 15px;
+        min-height: 40px;
+    }
+    
+    /* 작은 모바일 하단 고정 버튼 영역 */
+    .fixed-bottom-buttons {
+        padding: 10px 12px;
+    }
 }
 
-h1 {
-    color: #2d3a4b;
-    margin-bottom: 30px;
-}
-
-#attendanceBtn {
-    background: #4f8cff;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 15px 30px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-bottom: 20px;
-}
-
-#attendanceBtn:hover {
-    background: #346fd1;
-}
-
-#timeDisplay {
-    font-size: 16px;
-    color: #2d3a4b;
-    margin-top: 20px;
+/* 가로 모드 (landscape) 모바일 최적화 */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .container {
+        margin: 16px auto;
+        max-width: 90%;
+        margin-bottom: 120px;
+    }
+    
+    #checkinBtn,
+    #checkoutBtn {
+        display: inline-block;
+        width: calc(50% - 12px); /* 간격을 고려한 너비 조정 */
+        margin-right: 12px; /* 가로 모드에서도 적절한 간격 */
+        margin-bottom: 0;
+    }
+    
+    #checkoutBtn {
+        margin-right: 0;
+    }
 }

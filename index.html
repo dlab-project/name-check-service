@@ -15,25 +15,27 @@
             <strong>현재 학번: <span id="currentStudentId"></span></strong>
         </div>
         
-        <button id="checkinBtn">출석체크</button>
-        <button id="checkoutBtn">퇴실체크</button>
-        
-
-        
         <div id="timeDisplay"></div>
     </div>
-        <!-- 학번 입력 모달 -->
-        <div id="studentIdModal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <h2>학번 입력</h2>
-                <input type="text" id="studentIdInput" placeholder="학번을 입력하세요" />
-                <div id="studentIdError" style="color:red; margin-top:8px; display:none;"></div>
-                <div style="margin-top: 15px; text-align: center;">
-                    <button id="studentIdSubmit" style="margin-right: 10px;">확인</button>
-                    <button id="studentIdCancel">취소</button>
-                </div>
+    
+    <!-- 하단 고정 버튼 영역 -->
+    <div class="fixed-bottom-buttons">
+        <button id="checkinBtn">출석체크</button>
+        <button id="checkoutBtn">퇴실체크</button>
+    </div>
+    
+    <!-- 학번 입력 모달 -->
+    <div id="studentIdModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>학번 입력</h2>
+            <input type="text" id="studentIdInput" placeholder="학번을 입력하세요" />
+            <div id="studentIdError" style="color:red; margin-top:8px; display:none;"></div>
+            <div style="margin-top: 15px; text-align: center;">
+                <button id="studentIdSubmit" style="margin-right: 10px;">확인</button>
+                <button id="studentIdCancel">취소</button>
             </div>
         </div>
+    </div>
     
     <!-- Supabase CDN -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
