@@ -17,8 +17,8 @@ async function loadCheckData() {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${row.student_id}</td>
-            <td>${row.checkin_time ? new Date(row.checkin_time).toLocaleString() : '-'}</td>
-            <td>${row.checkout_time ? new Date(row.checkout_time).toLocaleString() : '-'}</td>
+            <td>${row.checkin_time ? new Date(row.checkin_time).toISOString() : '-'}</td>
+            <td>${row.checkout_time ? new Date(row.checkout_time).toISOString() : '-'}</td>
         `;
         tbody.appendChild(tr);
     });
