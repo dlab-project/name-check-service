@@ -10,8 +10,8 @@
     <div class="container">
         <h1>야간자율학습 출석체크</h1>
         
-        <!-- 학번 표시 영역 추가 -->
-        <div id="studentIdDisplay" style="display: none; margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; text-align: center;">
+        <!-- 학번 표시 영역 -->
+        <div id="studentIdDisplay">
             <strong>현재 학번: <span id="currentStudentId"></span></strong>
         </div>
         
@@ -29,9 +29,9 @@
         <div class="modal-content">
             <h2>학번 입력</h2>
             <input type="text" id="studentIdInput" placeholder="학번을 입력하세요" />
-            <div id="studentIdError" style="color:red; margin-top:8px; display:none;"></div>
-            <div style="margin-top: 15px; text-align: center;">
-                <button id="studentIdSubmit" style="margin-right: 10px;">확인</button>
+            <div id="studentIdError"></div>
+            <div class="modal-actions">
+                <button id="studentIdSubmit">확인</button>
                 <button id="studentIdCancel">취소</button>
             </div>
         </div>
