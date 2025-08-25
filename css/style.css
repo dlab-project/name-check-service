@@ -1,30 +1,53 @@
+/* Design tokens */
+:root {
+    --color-bg: #f7fafc;
+    --color-surface: #ffffff;
+    --color-muted-surface: #f9fafb;
+    --color-text: #111827;
+    --color-subtext: #6b7280;
+    --color-border: #e5e7eb;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-primary-focus: rgba(37, 99, 235, .35);
+    --color-danger: #ef4444;
+    --color-danger-hover: #dc2626;
+    --color-danger-focus: rgba(239, 68, 68, .35);
+
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    --shadow-sm: 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-md: 0 8px 20px rgba(0,0,0,0.08);
+}
+
 /* 출석 체크 버튼 기본 스타일 (공통) */
 #checkinBtn {
-    background: #1976d2;
+    background: var(--color-primary);
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     padding: 12px 24px;
     font-size: 18px;
     font-weight: 600;
     cursor: pointer;
-    margin-right: 20px; /* 간격 증가 */
+    margin-right: 20px;
     width: 160px;
     box-sizing: border-box;
     transition: background .2s ease, transform .08s ease, box-shadow .2s ease;
 }
 #attendanceBtn:hover {
-    background: #1565c0;
+    background: var(--color-primary-hover);
 }
+#checkinBtn:hover { background: var(--color-primary-hover); }
 #checkinBtn:active { transform: translateY(1px); }
-#checkinBtn:focus-visible { outline: 3px solid rgba(37, 99, 235, .35); outline-offset: 2px; }
+#checkinBtn:focus-visible { outline: 3px solid var(--color-primary-focus); outline-offset: 2px; }
 
 /* 퇴실 체크 버튼 스타일 (색상만 다름) */
 #checkoutBtn {
-    background: #ef4444;
+    background: var(--color-danger);
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     padding: 12px 24px;
     font-size: 18px;
     font-weight: 600;
@@ -34,11 +57,9 @@
     box-sizing: border-box;
     transition: background .2s ease, transform .08s ease, box-shadow .2s ease;
 }
-#checkoutBtn:hover {
-    background: #dc2626;
-}
+#checkoutBtn:hover { background: var(--color-danger-hover); }
 #checkoutBtn:active { transform: translateY(1px); }
-#checkoutBtn:focus-visible { outline: 3px solid rgba(239, 68, 68, .35); outline-offset: 2px; }
+#checkoutBtn:focus-visible { outline: 3px solid var(--color-danger-focus); outline-offset: 2px; }
 
 /* 하단 고정 버튼 영역 */
 .fixed-bottom-buttons {
@@ -46,55 +67,52 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: #ffffffcc;
-    backdrop-filter: saturate(120%) blur(6px);
-    padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
-    box-shadow: 0 -6px 24px rgba(0,0,0,0.06);
+    background: var(--color-surface);
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
     z-index: 100;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--color-border);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
 }
-.fixed-bottom-buttons button {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
+.fixed-bottom-buttons button { box-shadow: var(--shadow-sm); }
 
 /* 하단 버튼들을 위한 여백 추가 */
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    background: #f6f8fb;
+    background: var(--color-bg);
     margin: 0;
     padding: 0;
-    padding-bottom: 100px; /* 하단 고정 버튼 영역만큼 여백 추가 */
+    padding-bottom: 100px;
 }
 
 .container {
     max-width: 640px;
     margin: 40px auto;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-    padding: 32px 24px;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 28px 22px;
     text-align: center;
 }
 
 h1 {
     color: #1f2937;
-    margin-bottom: 18px;
-    font-size: 28px;
+    margin-bottom: 14px;
+    font-size: 26px;
     font-weight: 700;
 }
 
 /* 부제/설명 영역이 있을 경우 간격 유지용 */
-.section-subtitle { color: #6b7280; margin-bottom: 24px; }
+.section-subtitle { color: var(--color-subtext); margin-bottom: 20px; }
 
 #attendanceBtn {
     background: #4f8cff;
     color: #fff;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     padding: 15px 30px;
     font-size: 18px;
     cursor: pointer;
@@ -102,31 +120,29 @@ h1 {
     margin-bottom: 20px;
 }
 
-#attendanceBtn:hover {
-    background: #346fd1;
-}
+#attendanceBtn:hover { background: #346fd1; }
 
 /* 학번 표시 박스 */
 #studentIdDisplay {
     display: none;
-    margin: 12px 0 18px;
+    margin: 12px 0 16px;
     padding: 12px 14px;
-    background: #f8fafc;
-    color: #0f172a;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     text-align: center;
 }
 
 /* 상태/시간 표시 박스 */
 #timeDisplay {
     font-size: 16px;
-    color: #111827;
-    margin-top: 16px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 14px 16px;
+    color: var(--color-text);
+    margin-top: 14px;
+    background: var(--color-muted-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
     text-align: left;
 }
 
@@ -144,182 +160,118 @@ h1 {
     justify-content: center;
 }
 .modal-content {
-    background: #fff;
-    padding: 24px 22px;
-    border-radius: 14px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+    background: var(--color-surface);
+    padding: 22px 20px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
     min-width: 300px;
     text-align: center;
 }
-.modal-content h2 { margin: 0 0 8px; color: #111827; }
+.modal-content h2 { margin: 0 0 8px; color: var(--color-text); font-size: 18px; }
 .modal-content input {
     width: 100%;
     padding: 12px;
-    margin-top: 12px;
+    margin-top: 10px;
     font-size: 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     box-sizing: border-box;
 }
 .modal-content input:focus { outline: 3px solid rgba(37, 99, 235, .25); border-color: #93c5fd; }
 .modal-content button {
-    margin-top: 16px;
-    padding: 10px 20px;
+    margin-top: 14px;
+    padding: 10px 18px;
     font-size: 16px;
-    background: #2563eb;
+    background: var(--color-primary);
     color: #fff;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     cursor: pointer;
 }
-.modal-content button:hover { background: #1d4ed8; }
+.modal-content button:hover { background: var(--color-primary-hover); }
 .modal-content button + button { margin-left: 8px; background: #6b7280; }
 .modal-content button + button:hover { background: #4b5563; }
 
 /* 모달 에러 및 액션 정리 */
-#studentIdError { color: #ef4444; margin-top: 8px; display: none; font-size: 14px; }
+#studentIdError { color: var(--color-danger); margin-top: 8px; display: none; font-size: 14px; }
 .modal-actions { margin-top: 15px; text-align: center; }
 
 /* 모바일 반응형 스타일 */
 @media screen and (max-width: 768px) {
     .container {
         margin: 20px 16px 120px;
-        padding: 24px 16px;
-        border-radius: 12px;
+        padding: 22px 16px;
+        border-radius: var(--radius-lg);
     }
     
-    h1 {
-        font-size: 24px;
-        margin-bottom: 12px;
-    }
+    h1 { font-size: 22px; margin-bottom: 10px; }
     
     #checkinBtn,
     #checkoutBtn {
         width: 100%;
         margin-right: 0;
-        margin-bottom: 16px; /* 버튼 간격 증가 */
-        padding: 16px 24px;
+        margin-bottom: 14px;
+        padding: 14px 20px;
         font-size: 16px;
-        min-height: 48px; /* 터치 친화적인 최소 높이 */
-        border-radius: 12px;
+        min-height: 48px;
+        border-radius: var(--radius-md);
     }
     
     #attendanceBtn {
         width: 100%;
-        padding: 16px 24px;
+        padding: 14px 20px;
         font-size: 16px;
         min-height: 48px;
     }
     
-    #timeDisplay {
-        font-size: 15px;
-        margin-top: 14px;
-        padding: 12px 14px;
-    }
+    #timeDisplay { font-size: 15px; margin-top: 12px; padding: 12px; }
     
     .modal-content {
         margin: 16px;
-        padding: 20px 16px;
+        padding: 18px 14px;
         min-width: auto;
         width: calc(100% - 32px);
         max-width: 420px;
-        border-radius: 12px;
+        border-radius: var(--radius-lg);
     }
     
-    .modal-content h2 {
-        font-size: 20px;
-        margin-bottom: 12px;
-    }
+    .modal-content h2 { font-size: 18px; margin-bottom: 10px; }
+    .modal-content input { padding: 12px; font-size: 16px; margin-top: 10px; }
+    .modal-content button { padding: 12px 16px; font-size: 16px; min-height: 44px; margin: 8px 4px 0; }
     
-    .modal-content input {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        margin-top: 12px;
-        box-sizing: border-box;
-    }
-    
-    .modal-content button {
-        padding: 12px 18px;
-        font-size: 16px;
-        min-height: 44px;
-        margin: 8px 4px 0;
-        border-radius: 12px;
-    }
-    
-    #studentIdDisplay {
-        margin: 10px 0 14px;
-        padding: 12px;
-        font-size: 14px;
-    }
+    #studentIdDisplay { margin: 10px 0 12px; padding: 12px; font-size: 14px; }
 
-    .fixed-bottom-buttons {
-        padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
-        flex-direction: column;
-        gap: 12px;
-    }
+    .fixed-bottom-buttons { padding: 12px 14px calc(12px + env(safe-area-inset-bottom)); flex-direction: column; gap: 12px; }
     .fixed-bottom-buttons button { width: 100%; max-width: none; }
 }
 
 /* 작은 모바일 화면 (320px ~ 480px) */
 @media screen and (max-width: 480px) {
-    .container {
-        margin: 16px 12px 120px;
-        padding: 20px 12px;
-    }
-    
-    h1 {
-        font-size: 22px;
-        margin-bottom: 10px;
-    }
-    
+    .container { margin: 16px 12px 120px; padding: 18px 12px; }
+    h1 { font-size: 20px; margin-bottom: 10px; }
     #checkinBtn,
     #checkoutBtn,
     #attendanceBtn {
-        padding: 14px 20px;
+        padding: 12px 18px;
         font-size: 15px;
         min-height: 46px;
-        margin-bottom: 18px; /* 작은 화면에서도 적절한 간격 */
+        margin-bottom: 16px;
     }
-    
-    .modal-content {
-        margin: 12px;
-        padding: 18px 12px;
-        width: calc(100% - 24px);
-    }
-    
-    .modal-content h2 {
-        font-size: 18px;
-    }
-    
-    .modal-content input {
-        padding: 10px;
-        font-size: 15px;
-    }
-    
-    .modal-content button {
-        padding: 10px 16px;
-        font-size: 15px;
-        min-height: 42px;
-    }
+    .modal-content { margin: 12px; padding: 16px 12px; width: calc(100% - 24px); }
+    .modal-content h2 { font-size: 18px; }
+    .modal-content input { padding: 10px; font-size: 15px; }
+    .modal-content button { padding: 10px 14px; font-size: 15px; min-height: 42px; }
 }
 
 /* 가로 모드 (landscape) 모바일 최적화 */
 @media screen and (max-width: 768px) and (orientation: landscape) {
-    .container {
-        margin: 16px auto 120px;
-        max-width: 90%;
-    }
-    
+    .container { margin: 16px auto 120px; max-width: 90%; }
     #checkinBtn,
     #checkoutBtn {
         display: inline-block;
-        width: calc(50% - 12px); /* 간격을 고려한 너비 조정 */
-        margin-right: 12px; /* 가로 모드에서도 적절한 간격 */
+        width: calc(50% - 12px);
+        margin-right: 12px;
         margin-bottom: 0;
     }
-    
-    #checkoutBtn {
-        margin-right: 0;
-    }
+    #checkoutBtn { margin-right: 0; }
 }
