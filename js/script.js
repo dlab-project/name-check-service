@@ -199,22 +199,9 @@ async function updateButtonVisibility() {
                     <div style="font-size: 24px; color: #333; margin-bottom: 20px;">
                         <strong>🎓 학생 출석 관리 시스템</strong>
                     </div>
-                    <div style="font-size: 16px; color: #666; margin-bottom: 30px;">
-                        출석체크를 위해 학번을 입력해주세요
+                    <div style="font-size: 16px; color: #666;">
+                        학번을 입력하고 출석체크를 시작하세요
                     </div>
-                    <button onclick="showStudentIdModal()" style="
-                        background-color: #007bff; 
-                        color: white; 
-                        border: none; 
-                        padding: 12px 24px; 
-                        border-radius: 6px; 
-                        font-size: 16px; 
-                        cursor: pointer;
-                        transition: background-color 0.3s;
-                    " onmouseover="this.style.backgroundColor='#0056b3'" 
-                       onmouseout="this.style.backgroundColor='#007bff'">
-                        학번 입력하기
-                    </button>
                 </div>
             `;
         }
