@@ -62,31 +62,6 @@ async function loadCheckData() {
     }
 }
 
-// 새로고침 버튼 기능
-async function refreshData() {
-    const refreshBtn = document.getElementById('refreshBtn');
-    if (refreshBtn) {
-        refreshBtn.disabled = true;
-        refreshBtn.textContent = '새로고침 중...';
-    }
-    
-    try {
-        await loadCheckData();
-        if (refreshBtn) {
-            refreshBtn.textContent = '새로고침 완료';
-            setTimeout(() => {
-                refreshBtn.textContent = '새로고침';
-                refreshBtn.disabled = false;
-            }, 1000);
-        }
-    } catch (error) {
-        if (refreshBtn) {
-            refreshBtn.textContent = '새로고침';
-            refreshBtn.disabled = false;
-        }
-    }
-}
-
 // 데이터 내보내기 기능 (Excel 형식)
 function exportData() {
     try {
@@ -282,12 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 현재 출석코드 로드
     loadCurrentCode();
-    
-    // 새로고침 버튼 이벤트 리스너
-    const refreshBtn = document.getElementById('refreshBtn');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', refreshData);
-    }
     
     // 데이터 내보내기 버튼 이벤트 리스너
     const exportBtn = document.getElementById('exportBtn');

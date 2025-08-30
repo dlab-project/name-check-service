@@ -177,17 +177,6 @@ body {
     min-width: 140px;
 }
 
-.admin-btn.primary {
-    background: var(--color-school);
-    color: white;
-}
-
-.admin-btn.primary:hover {
-    background: var(--color-school-hover);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-}
-
 .admin-btn.secondary {
     background: var(--color-primary);
     color: white;
