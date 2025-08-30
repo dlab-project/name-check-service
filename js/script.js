@@ -42,6 +42,25 @@ function updateStudentIdDisplay() {
     }
 }
 
+// 학번 변경 시 기존 출석 기록 초기화 함수
+function clearAttendanceDisplay() {
+    const timeDisplay = document.getElementById('timeDisplay');
+    if (timeDisplay) {
+        timeDisplay.innerHTML = '';
+    }
+    
+    // 출석 관련 버튼들도 초기 상태로 리셋
+    const checkinBtn = document.getElementById('checkinBtn');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    
+    if (checkinBtn) {
+        checkinBtn.style.display = 'none';
+    }
+    if (checkoutBtn) {
+        checkoutBtn.style.display = 'none';
+    }
+}
+
 // 출석 상태에 따른 버튼 표시/숨김 처리
 async function updateButtonVisibility() {
     const checkinBtn = document.getElementById('checkinBtn');
@@ -87,7 +106,7 @@ async function updateButtonVisibility() {
         const currentTime = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
         const today = currentTime.toISOString().split('T')[0];
         
-        // 오늘의 출석 기록 확인
+        // 새로운 학번으로 오늘의 출석 기록 확인
         const { data: todayCheck, error: checkError } = await supabase
             .from('check')
             .select('*')
@@ -98,6 +117,12 @@ async function updateButtonVisibility() {
         if (checkError) {
             console.error('출석 상태 확인 오류:', checkError);
             return;
+        }
+
+        // 학번이 변경되었을 때 이전 출석 기록 표시 방지
+        if (timeDisplay && (!todayCheck || todayCheck.length === 0)) {
+            // 새로운 학번에 대한 출석 기록이 없으면 기존 표시 내용 초기화
+            timeDisplay.innerHTML = '';
         }
 
         if (!todayCheck || todayCheck.length === 0) {
@@ -193,6 +218,8 @@ document.getElementById('studentIdSubmit').addEventListener('click', function() 
         if (!confirm(`현재 학번 '${studentId}'에서 '${newStudentId}'로 변경하시겠습니까?\n\n⚠️ 주의: 학번 변경 시 기존 출석 기록과의 연결이 끊어질 수 있습니다.`)) {
             return;
         }
+        // 학번 변경 시 기존 출석 기록 초기화
+        clearAttendanceDisplay();
     }
     
     studentId = newStudentId;
@@ -200,7 +227,11 @@ document.getElementById('studentIdSubmit').addEventListener('click', function() 
     saveStudentIdToStorage(studentId);
     hideStudentIdModal();
     updateStudentIdDisplay();
-    updateButtonVisibility(); // 학번 입력 후 버튼 표시 상태 업데이트
+    
+    // 학번 변경 후 새로운 학번에 대한 출석 상태 확인
+    setTimeout(() => {
+        updateButtonVisibility(); // 학번 입력 후 버튼 표시 상태 업데이트
+    }, 100);
 });
 
 // 취소 버튼 이벤트 리스너
