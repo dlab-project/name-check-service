@@ -35,10 +35,41 @@ function updateStudentIdDisplay() {
 
 // 출석 상태에 따른 버튼 표시/숨김 처리
 async function updateButtonVisibility() {
+    const checkinBtn = document.getElementById('checkinBtn');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const timeDisplay = document.getElementById('timeDisplay');
+    
     if (!studentId) {
         // 학번이 없으면 모든 버튼 숨김
-        document.getElementById('checkinBtn').style.display = 'none';
-        document.getElementById('checkoutBtn').style.display = 'none';
+        checkinBtn.style.display = 'none';
+        checkoutBtn.style.display = 'none';
+        
+        // 학번 입력 안내 메시지 표시
+        if (timeDisplay) {
+            timeDisplay.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 24px; color: #333; margin-bottom: 20px;">
+                        <strong>🎓 학생 출석 관리 시스템</strong>
+                    </div>
+                    <div style="font-size: 16px; color: #666; margin-bottom: 30px;">
+                        출석체크를 위해 학번을 입력해주세요
+                    </div>
+                    <button onclick="showStudentIdModal()" style="
+                        background-color: #007bff; 
+                        color: white; 
+                        border: none; 
+                        padding: 12px 24px; 
+                        border-radius: 6px; 
+                        font-size: 16px; 
+                        cursor: pointer;
+                        transition: background-color 0.3s;
+                    " onmouseover="this.style.backgroundColor='#0056b3'" 
+                       onmouseout="this.style.backgroundColor='#007bff'">
+                        학번 입력하기
+                    </button>
+                </div>
+            `;
+        }
         return;
     }
 
@@ -59,9 +90,6 @@ async function updateButtonVisibility() {
             console.error('출석 상태 확인 오류:', checkError);
             return;
         }
-
-        const checkinBtn = document.getElementById('checkinBtn');
-        const checkoutBtn = document.getElementById('checkoutBtn');
 
         if (!todayCheck || todayCheck.length === 0) {
             // 오늘 출석하지 않음 - 출석 체크 버튼만 표시
@@ -98,9 +126,15 @@ document.addEventListener('DOMContentLoaded', function() {
         studentId = savedStudentId;
         updateStudentIdDisplay();
         updateButtonVisibility(); // 출석 상태에 따른 버튼 표시 업데이트
+    } else {
+        // 학번이 없으면 기본 메인페이지 표시하고 학번 입력 모달 자동 표시
+        updateStudentIdDisplay();
+        updateButtonVisibility();
+        // 약간의 지연 후 학번 입력 모달 표시
+        setTimeout(() => {
+            showStudentIdModal();
+        }, 500);
     }
-    
-
 });
 
 // 학번 입력 모달 관련 코드
@@ -113,10 +147,12 @@ function showStudentIdModal() {
     if (studentId) {
         document.getElementById('studentIdInput').value = studentId;
         document.getElementById('studentIdInput').select();
+        // 기존 학번이 있으면 "학번 수정"으로 제목 변경
+        document.querySelector('#studentIdModal h2').textContent = '학번 수정';
+    } else {
+        // 기존 학번이 없으면 "학번 입력"으로 제목 변경
+        document.querySelector('#studentIdModal h2').textContent = '학번 입력';
     }
-    
-    // 모달 제목 설정
-    document.querySelector('#studentIdModal h2').textContent = '학번 입력';
 }
 
 function hideStudentIdModal() {
@@ -142,6 +178,11 @@ document.getElementById('studentIdSubmit').addEventListener('click', function() 
 
 // 취소 버튼 이벤트 리스너
 document.getElementById('studentIdCancel').addEventListener('click', function() {
+    // 학번이 없으면 모달을 닫지 않음 (사용자가 반드시 학번을 입력해야 함)
+    if (!studentId) {
+        alert('출석체크를 위해 학번을 입력해주세요.');
+        return;
+    }
     hideStudentIdModal();
 });
 
