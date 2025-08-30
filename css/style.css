@@ -134,6 +134,27 @@ h1 {
     text-align: center;
 }
 
+/* 학번 수정 버튼 스타일 */
+.edit-btn {
+    background: #6b7280;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 12px;
+    transition: background-color 0.2s ease;
+}
+
+.edit-btn:hover {
+    background: #4b5563;
+}
+
+.edit-btn:active {
+    transform: translateY(1px);
+}
+
 /* 상태/시간 표시 박스 */
 #timeDisplay {
     font-size: 16px;

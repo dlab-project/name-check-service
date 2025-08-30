@@ -24,12 +24,21 @@ function removeStudentIdFromStorage() {
 function updateStudentIdDisplay() {
     const studentIdDisplay = document.getElementById('studentIdDisplay');
     const currentStudentIdSpan = document.getElementById('currentStudentId');
+    const editStudentIdBtn = document.getElementById('editStudentIdBtn');
     
     if (studentId && studentIdDisplay && currentStudentIdSpan) {
         currentStudentIdSpan.textContent = studentId;
         studentIdDisplay.style.display = 'block';
+        // 학번이 있을 때만 수정 버튼 표시
+        if (editStudentIdBtn) {
+            editStudentIdBtn.style.display = 'inline-block';
+        }
     } else if (studentIdDisplay) {
         studentIdDisplay.style.display = 'none';
+        // 학번이 없을 때는 수정 버튼 숨김
+        if (editStudentIdBtn) {
+            editStudentIdBtn.style.display = 'none';
+        }
     }
 }
 
@@ -135,6 +144,14 @@ document.addEventListener('DOMContentLoaded', function() {
             showStudentIdModal();
         }, 500);
     }
+    
+    // 학번 수정 버튼 이벤트 리스너 추가
+    const editStudentIdBtn = document.getElementById('editStudentIdBtn');
+    if (editStudentIdBtn) {
+        editStudentIdBtn.addEventListener('click', function() {
+            showStudentIdModal();
+        });
+    }
 });
 
 // 학번 입력 모달 관련 코드
@@ -168,7 +185,17 @@ document.getElementById('studentIdSubmit').addEventListener('click', function() 
         document.getElementById('studentIdError').style.display = 'block';
         return;
     }
-    studentId = input.trim();
+    
+    const newStudentId = input.trim();
+    
+    // 기존 학번이 있고, 새로운 학번과 다른 경우 확인 절차
+    if (studentId && studentId !== newStudentId) {
+        if (!confirm(`현재 학번 '${studentId}'에서 '${newStudentId}'로 변경하시겠습니까?\n\n⚠️ 주의: 학번 변경 시 기존 출석 기록과의 연결이 끊어질 수 있습니다.`)) {
+            return;
+        }
+    }
+    
+    studentId = newStudentId;
     // 로컬 스토리지에 저장
     saveStudentIdToStorage(studentId);
     hideStudentIdModal();
