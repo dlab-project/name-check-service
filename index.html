@@ -38,6 +38,20 @@
         </div>
     </div>
     
+    <!-- 출석코드 입력 모달 -->
+    <div id="attendanceCodeModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>출석코드 입력</h2>
+            <p style="color: #666; margin-bottom: 15px;">출석체크를 위해 출석코드를 입력해주세요.</p>
+            <input type="text" id="attendanceCodeInput" placeholder="출석코드를 입력하세요" />
+            <div id="attendanceCodeError" class="error-message"></div>
+            <div class="modal-actions">
+                <button id="attendanceCodeSubmit">확인</button>
+                <button id="attendanceCodeCancel">취소</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Supabase CDN -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/script.js"></script>

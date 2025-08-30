@@ -215,6 +215,8 @@ h1 {
 
 /* 모달 에러 및 액션 정리 */
 #studentIdError { color: var(--color-danger); margin-top: 8px; display: none; font-size: 14px; }
+#attendanceCodeError { color: var(--color-danger); margin-top: 8px; display: none; font-size: 14px; }
+.error-message { color: var(--color-danger); margin-top: 8px; display: none; font-size: 14px; }
 .modal-actions { margin-top: 15px; text-align: center; }
 
 /* 모바일 반응형 스타일 */

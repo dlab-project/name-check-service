@@ -22,6 +22,111 @@ function formatTimeString(isoTimeString) {
     return `${year}. ${month}. ${day}. ${hour}:${minute}:${second}`;
 }
 
+// 출석코드 검증 함수
+async function verifyAttendanceCode(inputCode) {
+    try {
+        // code 테이블에서 created_at 기준으로 가장 최근 코드 조회
+        const { data: codeData, error: codeError } = await supabase
+            .from('code')
+            .select('code')
+            .order('created_at', { ascending: false })
+            .limit(1);
+            
+        if (codeError) {
+            console.error('코드 조회 오류:', codeError);
+            throw new Error('출석코드 조회에 실패했습니다.');
+        }
+        
+        if (!codeData || codeData.length === 0) {
+            throw new Error('등록된 출석코드가 없습니다.');
+        }
+        
+        // 문자열로 변환하여 비교
+        const validCode = String(codeData[0].code);
+        const userInputCode = String(inputCode);
+        
+        console.log('출석코드 검증:', { validCode, userInputCode });
+        
+        return validCode === userInputCode;
+    } catch (error) {
+        console.error('출석코드 검증 오류:', error);
+        throw error;
+    }
+}
+
+// 출석코드 입력 모달 관련 함수들
+function showAttendanceCodeModal() {
+    const modal = document.getElementById('attendanceCodeModal');
+    const input = document.getElementById('attendanceCodeInput');
+    const error = document.getElementById('attendanceCodeError');
+    
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+    if (input) {
+        input.value = '';
+    }
+    if (error) {
+        error.style.display = 'none';
+    }
+    
+    // 입력창에 포커스
+    setTimeout(() => {
+        if (input) {
+            input.focus();
+        }
+    }, 100);
+}
+
+function hideAttendanceCodeModal() {
+    const modal = document.getElementById('attendanceCodeModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// 출석코드 확인 및 출석체크 수행
+async function handleAttendanceCodeSubmit() {
+    const codeInputElement = document.getElementById('attendanceCodeInput');
+    const errorDiv = document.getElementById('attendanceCodeError');
+    
+    if (!codeInputElement || !errorDiv) {
+        console.error('출석코드 모달 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
+    const codeInput = codeInputElement.value;
+    
+    if (!codeInput || codeInput.trim() === '') {
+        errorDiv.textContent = '출석코드를 입력해주세요.';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    try {
+        // 출석코드 검증
+        const isValidCode = await verifyAttendanceCode(codeInput.trim());
+        
+        if (isValidCode) {
+            // 코드가 올바르면 모달 닫고 출석체크 수행
+            hideAttendanceCodeModal();
+            await performCheckin();
+        } else {
+            // 코드가 틀리면 오류 메시지 표시
+            errorDiv.textContent = '출석코드가 올바르지 않습니다.';
+            errorDiv.style.display = 'block';
+            // 입력창 다시 포커스 및 선택
+            codeInputElement.select();
+        }
+    } catch (error) {
+        console.error('출석코드 처리 오류:', error);
+        errorDiv.textContent = error.message || '출석코드 확인 중 오류가 발생했습니다.';
+        errorDiv.style.display = 'block';
+    }
+}
+
+
+
 // 로컬 스토리지 관련 함수들
 function saveStudentIdToStorage(id) {
     localStorage.setItem('studentId', id);
@@ -192,6 +297,29 @@ document.addEventListener('DOMContentLoaded', function() {
             showStudentIdModal();
         });
     }
+    
+    // 출석코드 모달 이벤트 리스너들
+    // 출석코드 확인 버튼
+    const attendanceCodeSubmit = document.getElementById('attendanceCodeSubmit');
+    if (attendanceCodeSubmit) {
+        attendanceCodeSubmit.addEventListener('click', handleAttendanceCodeSubmit);
+    }
+    
+    // 출석코드 취소 버튼
+    const attendanceCodeCancel = document.getElementById('attendanceCodeCancel');
+    if (attendanceCodeCancel) {
+        attendanceCodeCancel.addEventListener('click', hideAttendanceCodeModal);
+    }
+    
+    // 출석코드 입력창 엔터키 처리
+    const attendanceCodeInput = document.getElementById('attendanceCodeInput');
+    if (attendanceCodeInput) {
+        attendanceCodeInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                handleAttendanceCodeSubmit();
+            }
+        });
+    }
 });
 
 // 학번 입력 모달 관련 코드
@@ -293,6 +421,12 @@ checkinBtn.addEventListener('click', async function() {
         return;
     }
     
+    // 출석코드 입력 모달 표시
+    showAttendanceCodeModal();
+});
+
+// 실제 출석체크 수행 함수
+async function performCheckin() {
     // 버튼 비활성화
     checkinBtn.disabled = true;
     checkinBtn.textContent = '출석체크 중...';
@@ -378,7 +512,7 @@ checkinBtn.addEventListener('click', async function() {
         checkinBtn.disabled = false;
         checkinBtn.textContent = '출석체크';
     }
-});
+}
 
 // 퇴실체크 버튼 기능
 const checkoutBtn = document.getElementById('checkoutBtn');
