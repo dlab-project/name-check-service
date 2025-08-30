@@ -167,6 +167,7 @@ function clearAttendanceDisplay() {
     const timeDisplay = document.getElementById('timeDisplay');
     if (timeDisplay) {
         timeDisplay.innerHTML = '';
+        timeDisplay.style.display = 'none'; // 내용이 비어있으면 숨김
     }
     
     // 출석 관련 버튼들도 초기 상태로 리셋
@@ -192,18 +193,10 @@ async function updateButtonVisibility() {
         checkinBtn.style.display = 'none';
         checkoutBtn.style.display = 'none';
         
-        // 학번 입력 안내 메시지 표시
+        // timeDisplay 영역도 숨김
         if (timeDisplay) {
-            timeDisplay.innerHTML = `
-                <div style="text-align: center; padding: 40px 20px;">
-                    <div style="font-size: 24px; color: #333; margin-bottom: 20px;">
-                        <strong>🎓 학생 출석 관리 시스템</strong>
-                    </div>
-                    <div style="font-size: 16px; color: #666;">
-                        학번을 입력하고 출석체크를 시작하세요
-                    </div>
-                </div>
-            `;
+            timeDisplay.innerHTML = '';
+            timeDisplay.style.display = 'none';
         }
         return;
     }
@@ -230,6 +223,7 @@ async function updateButtonVisibility() {
         if (timeDisplay && (!todayCheck || todayCheck.length === 0)) {
             // 새로운 학번에 대한 출석 기록이 없으면 기존 표시 내용 초기화
             timeDisplay.innerHTML = '';
+            timeDisplay.style.display = 'none'; // 내용이 비어있으면 숨김
         }
 
         if (!todayCheck || todayCheck.length === 0) {
@@ -253,6 +247,7 @@ async function updateButtonVisibility() {
                     <div style="margin-bottom: 10px;"><strong>출석 시간:</strong> ${formatTimeString(todayRecord.checkin_time)}</div>
                     <div><strong>퇴실 시간:</strong> ${formatTimeString(todayRecord.checkout_time)}</div>
                 `;
+                timeDisplay.style.display = 'block'; // 내용이 있으면 표시
             }
         }
     } catch (error) {
@@ -453,6 +448,7 @@ async function performCheckin() {
                 <div style="margin-bottom: 10px;"><strong>학번:</strong> ${studentId}</div>
                 <div><strong>출석 시간:</strong> ${checkinTime}</div>
             `;
+            timeDisplay.style.display = 'block'; // 내용이 있으면 표시
             alert('이미 오늘 출석한 기록이 있습니다.');
             updateButtonVisibility(); // 버튼 표시 상태 업데이트
             return;
@@ -482,6 +478,7 @@ async function performCheckin() {
             <div style="margin-bottom: 10px;"><strong>학번:</strong> ${studentId}</div>
             <div><strong>출석 시간:</strong> ${currentTimeString}</div>
         `;
+        timeDisplay.style.display = 'block'; // 내용이 있으면 표시
         alert('출석체크가 완료되었습니다!');
         console.log('출석 기록 저장 성공:', data);
         
@@ -493,6 +490,7 @@ async function performCheckin() {
         timeDisplay.innerHTML = `
             <div style="color: red;"><strong>❌ 출석체크 실패: ${error.message}</strong></div>
         `;
+        timeDisplay.style.display = 'block'; // 내용이 있으면 표시
         alert('출석체크에 실패했습니다: ' + error.message);
     } finally {
         // 버튼 다시 활성화
@@ -560,6 +558,7 @@ async function handleCheckout() {
             <div style="margin-bottom: 10px;"><strong>학번:</strong> ${studentId}</div>
             <div><strong>퇴실 시간:</strong> ${currentTimeString}</div>
         `;
+        timeDisplay.style.display = 'block'; // 내용이 있으면 표시
         alert('퇴실체크가 완료되었습니다!');
         console.log('퇴실 시간 저장 성공:', data);
         
@@ -571,6 +570,7 @@ async function handleCheckout() {
         timeDisplay.innerHTML = `
             <div style="color: red;"><strong>❌ 퇴실체크 실패: ${error.message}</strong></div>
         `;
+        timeDisplay.style.display = 'block'; // 내용이 있으면 표시
         alert('퇴실체크에 실패했습니다: ' + error.message);
     } finally {
         checkoutBtn.disabled = false;
