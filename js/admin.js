@@ -87,14 +87,17 @@ async function refreshData() {
     }
 }
 
-// 데이터 내보내기 기능
+// 데이터 내보내기 기능 (Excel 형식)
 function exportData() {
     try {
         const table = document.getElementById('checkTable');
         const rows = Array.from(table.querySelectorAll('tr'));
         
-        // CSV 헤더 생성
-        let csvContent = '학번,출석 시간,퇴실 시간,상태\n';
+        // 데이터 배열 생성 (헤더 제외)
+        const data = [];
+        
+        // 헤더 행 추가
+        data.push(['학번', '출석 시간', '퇴실 시간', '상태']);
         
         // 데이터 행 추가 (헤더 제외)
         for (let i = 1; i < rows.length; i++) {
@@ -105,25 +108,57 @@ function exportData() {
                 const checkoutTime = cells[2].textContent.trim();
                 const status = cells[3].textContent.trim();
                 
-                csvContent += `"${studentId}","${checkinTime}","${checkoutTime}","${status}"\n`;
+                data.push([studentId, checkinTime, checkoutTime, status]);
             }
         }
         
-        // CSV 파일 다운로드
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', `제일고등학교_야간자율학습_출석현황_${new Date().toISOString().split('T')[0]}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // 워크북 생성
+        const wb = XLSX.utils.book_new();
         
-        console.log('데이터 내보내기 완료');
+        // 워크시트 생성
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        
+        // 열 너비 자동 조정
+        const colWidths = [
+            { wch: 15 },  // 학번
+            { wch: 25 },  // 출석 시간
+            { wch: 25 },  // 퇴실 시간
+            { wch: 12 }   // 상태
+        ];
+        ws['!cols'] = colWidths;
+        
+        // 워크시트를 워크북에 추가
+        XLSX.utils.book_append_sheet(wb, ws, '출석현황');
+        
+        // 파일명 생성 (현재 날짜 포함)
+        const fileName = `제일고등학교_야간자율학습_출석현황_${new Date().toISOString().split('T')[0]}.xlsx`;
+        
+        // Excel 파일 다운로드
+        XLSX.writeFile(wb, fileName);
+        
+        console.log('Excel 파일 내보내기 완료:', fileName);
+        
+        // 성공 메시지 표시
+        showExportSuccess();
+        
     } catch (error) {
-        console.error('데이터 내보내기 오류:', error);
-        alert('데이터 내보내기 중 오류가 발생했습니다.');
+        console.error('Excel 파일 내보내기 오류:', error);
+        alert('Excel 파일 내보내기 중 오류가 발생했습니다: ' + error.message);
+    }
+}
+
+// 내보내기 성공 메시지 표시
+function showExportSuccess() {
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        const originalText = exportBtn.textContent;
+        exportBtn.textContent = '내보내기 완료!';
+        exportBtn.style.background = 'var(--color-success)';
+        
+        setTimeout(() => {
+            exportBtn.textContent = originalText;
+            exportBtn.style.background = '';
+        }, 2000);
     }
 }
 
