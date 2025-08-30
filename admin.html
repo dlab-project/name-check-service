@@ -3,24 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>출석/퇴실 관리(Admin)</title>
+    <title>제일고등학교 야간자율학습 관리자 페이지</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
     <div class="admin-container">
-        <h1>출석/퇴실 관리(Admin)</h1>
-        <table id="checkTable">
-            <thead>
-                <tr>
-                    <th>학번</th>
-                    <th>출석 시간</th>
-                    <th>퇴실 시간</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- 데이터가 여기에 표시됩니다 -->
-            </tbody>
-        </table>
+        <!-- 학교 로고 및 제목 영역 -->
+        <div class="school-header">
+            <div class="school-logo">
+                <img src="assets/logo.webp" alt="제일고등학교 로고" class="logo-image">
+            </div>
+            <div class="school-title">
+                <h1>제일고등학교</h1>
+                <h2>야간자율학습 관리자 페이지</h2>
+            </div>
+        </div>
+        
+        <!-- 관리 기능 영역 -->
+        <div class="admin-controls">
+            <button id="refreshBtn" class="admin-btn primary">새로고침</button>
+            <button id="exportBtn" class="admin-btn secondary">데이터 내보내기</button>
+        </div>
+        
+        <!-- 출석 데이터 테이블 -->
+        <div class="table-container">
+            <table id="checkTable">
+                <thead>
+                    <tr>
+                        <th>학번</th>
+                        <th>출석 시간</th>
+                        <th>퇴실 시간</th>
+                        <th>상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 데이터가 여기에 표시됩니다 -->
+                </tbody>
+            </table>
+        </div>
     </div>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/admin.js"></script>

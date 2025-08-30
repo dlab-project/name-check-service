@@ -1,34 +1,264 @@
+/* Design tokens - style.css와 동일한 변수 사용 */
+:root {
+    --color-bg: #f7fafc;
+    --color-surface: #ffffff;
+    --color-muted-surface: #f9fafb;
+    --color-text: #111827;
+    --color-subtext: #6b7280;
+    --color-border: #e5e7eb;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-primary-focus: rgba(37, 99, 235, .35);
+    --color-danger: #ef4444;
+    --color-danger-hover: #dc2626;
+    --color-danger-focus: rgba(239, 68, 68, .35);
+    --color-school: #d97706;
+    --color-school-hover: #b45309;
+    --color-success: #10b981;
+    --color-success-hover: #059669;
+
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    --shadow-sm: 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-md: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* 기본 스타일 */
 body {
-    background: #f7f7f7;
-    font-family: 'Noto Sans KR', Arial, sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--color-bg);
+    margin: 0;
+    padding: 0;
+    color: var(--color-text);
 }
-.admin-container {
-    max-width: 700px;
-    margin: 40px auto;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 32px 24px;
-}
-h1 {
+
+/* 학교 헤더 스타일 - style.css와 동일 */
+.school-header {
     text-align: center;
-    margin-bottom: 32px;
-    color: #333;
+    margin-bottom: 30px;
+    padding: 20px 0;
 }
-table {
+
+.school-logo {
+    margin-bottom: 20px;
+}
+
+.logo-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 50%;
+    box-shadow: var(--shadow-sm);
+}
+
+.school-title h1 {
+    color: var(--color-school);
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.school-title h2 {
+    color: var(--color-text);
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+/* 관리자 컨테이너 */
+.admin-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 28px 22px;
+}
+
+/* 관리 기능 버튼 영역 */
+.admin-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.admin-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 140px;
+}
+
+.admin-btn.primary {
+    background: var(--color-school);
+    color: white;
+}
+
+.admin-btn.primary:hover {
+    background: var(--color-school-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-btn.secondary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.admin-btn.secondary:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-btn:active {
+    transform: translateY(0);
+}
+
+/* 테이블 컨테이너 */
+.table-container {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+/* 테이블 스타일 */
+#checkTable {
     width: 100%;
     border-collapse: collapse;
-    background: #fafafa;
+    background: var(--color-surface);
 }
-th, td {
-    border: 1px solid #e0e0e0;
-    padding: 12px 8px;
-    text-align: center;
+
+#checkTable thead {
+    background: var(--color-muted-surface);
 }
-th {
-    background: #e9ecef;
-    color: #222;
+
+#checkTable th {
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text);
+    border-bottom: 2px solid var(--color-border);
+    font-size: 14px;
 }
-tbody tr:nth-child(even) {
-    background: #f1f3f5;
+
+#checkTable td {
+    padding: 12px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+    color: var(--color-text);
+}
+
+#checkTable tbody tr:hover {
+    background: var(--color-muted-surface);
+}
+
+/* 상태 표시 */
+.status-present {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.status-absent {
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+.status-checked-out {
+    color: var(--color-subtext);
+    font-weight: 500;
+}
+
+/* 반응형 디자인 */
+@media screen and (max-width: 768px) {
+    .admin-container {
+        margin: 16px 16px;
+        padding: 20px 16px;
+    }
+    
+    .school-header {
+        margin-bottom: 20px;
+        padding: 15px 0;
+    }
+    
+    .logo-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .school-title h1 {
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+    
+    .school-title h2 {
+        font-size: 16px;
+    }
+    
+    .admin-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .admin-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    #checkTable {
+        font-size: 13px;
+    }
+    
+    #checkTable th,
+    #checkTable td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+    
+    /* 모바일에서 테이블 가로 스크롤 */
+    .table-container {
+        overflow-x: auto;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .admin-container {
+        margin: 12px 12px;
+        padding: 18px 12px;
+    }
+    
+    .logo-image {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .school-title h1 {
+        font-size: 22px;
+        margin-bottom: 6px;
+    }
+    
+    .school-title h2 {
+        font-size: 15px;
+    }
+    
+    .admin-btn {
+        padding: 10px 18px;
+        font-size: 15px;
+        min-height: 46px;
+    }
+    
+    #checkTable th,
+    #checkTable td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
 }
