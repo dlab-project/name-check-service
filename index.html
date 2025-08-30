@@ -3,12 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>야간자율학습 출석체크</title>
+    <title>제일고등학교 야간자율학습 출석체크</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>야간자율학습 출석체크</h1>
+        <!-- 학교 로고 및 제목 영역 -->
+        <div class="school-header">
+            <div class="school-logo">
+                <img src="assets/logo.webp" alt="제일고등학교 로고" class="logo-image">
+            </div>
+            <div class="school-title">
+                <h1>제일고등학교</h1>
+                <h2>야간자율학습 출석체크</h2>
+            </div>
+        </div>
         
         <!-- 학번 표시 영역 -->
         <div id="studentIdDisplay">
@@ -38,15 +47,15 @@
         </div>
     </div>
     
-    <!-- 출석코드 입력 모달 -->
+    <!-- 출석 코드 입력 모달 -->
     <div id="attendanceCodeModal" class="modal" style="display:none;">
         <div class="modal-content">
-            <h2>출석코드 입력</h2>
-            <p style="color: #666; margin-bottom: 15px;">출석체크를 위해 출석코드를 입력해주세요.</p>
-            <input type="text" id="attendanceCodeInput" placeholder="출석코드를 입력하세요" />
-            <div id="attendanceCodeError" class="error-message"></div>
+            <h2>출석 코드 입력</h2>
+            <p style="margin-bottom: 15px; color: #666;">출석 체크를 위해 코드를 입력해주세요</p>
+            <input type="text" id="attendanceCodeInput" placeholder="출석 코드를 입력하세요" maxlength="10" />
+            <div id="attendanceCodeError"></div>
             <div class="modal-actions">
-                <button id="attendanceCodeSubmit">확인</button>
+                <button id="attendanceCodeSubmit">출석 체크</button>
                 <button id="attendanceCodeCancel">취소</button>
             </div>
         </div>
