@@ -121,28 +121,35 @@ body {
     display: inline-block;
 }
 
-.code-refresh-btn {
-    background: var(--color-school);
-    color: white;
+/* 코드 갱신하기 버튼 */
+.code-update-btn {
+    margin-top: 16px;
+    background: var(--color-success);
     border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
+    color: white;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
     font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.code-refresh-btn:hover {
-    background: var(--color-school-hover);
-    transform: scale(1.1);
+.code-update-btn:hover {
+    background: var(--color-success-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
-.code-refresh-btn:active {
-    transform: scale(0.95);
+.code-update-btn:active {
+    transform: translateY(0);
+}
+
+.code-update-btn:disabled {
+    background: var(--color-subtext);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .code-info {
@@ -303,10 +310,11 @@ body {
         min-width: 100px;
     }
     
-    .code-refresh-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 14px;
+    .code-update-btn {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px 16px;
+        font-size: 15px;
     }
     
     .action-buttons {

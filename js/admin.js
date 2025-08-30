@@ -208,27 +208,71 @@ async function loadCurrentCode() {
     }
 }
 
-// 출석코드 새로고침 함수
-async function refreshCode() {
-    const refreshCodeBtn = document.getElementById('refreshCodeBtn');
-    if (refreshCodeBtn) {
-        refreshCodeBtn.style.transform = 'rotate(360deg)';
-        refreshCodeBtn.style.transition = 'transform 0.5s ease';
+// 코드 갱신하기 기능
+async function updateCode() {
+    const updateBtn = document.getElementById('updateCodeBtn');
+    if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.textContent = '코드 갱신 중...';
     }
     
     try {
+        // 4자리 랜덤 숫자 생성
+        const newCode = Math.floor(1000 + Math.random() * 9000).toString();
+        
+        console.log('새로운 출석코드 생성:', newCode);
+        
+        // 데이터베이스에 새로운 코드 저장
+        const { data, error } = await supabase
+            .from('code')
+            .insert([
+                {
+                    code: newCode,
+                    created_at: new Date().toISOString()
+                }
+            ]);
+            
+        if (error) {
+            console.error('새로운 코드 저장 오류:', error);
+            throw new Error('새로운 코드 저장에 실패했습니다: ' + error.message);
+        }
+        
+        console.log('새로운 출석코드 저장 완료:', data);
+        
+        // 성공 메시지 표시
+        showCodeUpdateSuccess(newCode);
+        
+        // 현재 코드 정보 업데이트
         await loadCurrentCode();
         
-        // 애니메이션 완료 후 원래 상태로
-        setTimeout(() => {
-            if (refreshCodeBtn) {
-                refreshCodeBtn.style.transform = 'rotate(0deg)';
-            }
-        }, 500);
-        
     } catch (error) {
-        console.error('출석코드 새로고침 오류:', error);
+        console.error('코드 갱신 오류:', error);
+        alert('코드 갱신 중 오류가 발생했습니다: ' + error.message);
+    } finally {
+        // 버튼 상태 복원
+        if (updateBtn) {
+            updateBtn.disabled = false;
+            updateBtn.textContent = '코드 갱신하기';
+        }
     }
+}
+
+// 코드 갱신 성공 메시지 표시
+function showCodeUpdateSuccess(newCode) {
+    const updateBtn = document.getElementById('updateCodeBtn');
+    if (updateBtn) {
+        const originalText = updateBtn.textContent;
+        updateBtn.textContent = `갱신 완료: ${newCode}`;
+        updateBtn.style.background = 'var(--color-success)';
+        
+        setTimeout(() => {
+            updateBtn.textContent = originalText;
+            updateBtn.style.background = '';
+        }, 3000);
+    }
+    
+    // 성공 알림
+    alert(`출석코드가 성공적으로 갱신되었습니다!\n\n새 코드: ${newCode}`);
 }
 
 // 페이지 로드 시 초기화
@@ -251,10 +295,10 @@ document.addEventListener('DOMContentLoaded', function() {
         exportBtn.addEventListener('click', exportData);
     }
     
-    // 출석코드 새로고침 버튼 이벤트 리스너
-    const refreshCodeBtn = document.getElementById('refreshCodeBtn');
-    if (refreshCodeBtn) {
-        refreshCodeBtn.addEventListener('click', refreshCode);
+    // 출석코드 갱신 버튼 이벤트 리스너
+    const updateCodeBtn = document.getElementById('updateCodeBtn');
+    if (updateCodeBtn) {
+        updateCodeBtn.addEventListener('click', updateCode);
     }
     
     console.log('관리자 페이지 초기화 완료');
