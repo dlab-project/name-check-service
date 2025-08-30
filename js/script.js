@@ -7,17 +7,17 @@ let studentId = '';
 
 
 
-// 시간 변환 함수 (DB 시간을 한국 시간 문자열로 변환)
+// 시간 포맷팅 함수 (로컬 시간 사용)
 function formatTimeString(isoTimeString) {
-    // DB에서 온 ISO 시간 문자열을 한국 시간으로 변환
+    // DB에서 온 ISO 시간 문자열을 로컬 시간으로 변환
     const currentTime = new Date(isoTimeString);
     
-    const year = currentTime.getUTCFullYear();
-    const month = String(currentTime.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(currentTime.getUTCDate()).padStart(2, '0');
-    const hour = String(currentTime.getUTCHours()).padStart(2, '0');
-    const minute = String(currentTime.getUTCMinutes()).padStart(2, '0');
-    const second = String(currentTime.getUTCSeconds()).padStart(2, '0');
+    const year = currentTime.getFullYear();
+    const month = String(currentTime.getMonth() + 1).padStart(2, '0');
+    const day = String(currentTime.getDate()).padStart(2, '0');
+    const hour = String(currentTime.getHours()).padStart(2, '0');
+    const minute = String(currentTime.getMinutes()).padStart(2, '0');
+    const second = String(currentTime.getSeconds()).padStart(2, '0');
     
     return `${year}. ${month}. ${day}. ${hour}:${minute}:${second}`;
 }
