@@ -7,6 +7,21 @@ let studentId = '';
 
 
 
+// 시간 변환 함수 (DB 시간을 한국 시간 문자열로 변환)
+function formatTimeString(isoTimeString) {
+    // DB에서 온 ISO 시간 문자열을 한국 시간으로 변환
+    const currentTime = new Date(isoTimeString);
+    
+    const year = currentTime.getUTCFullYear();
+    const month = String(currentTime.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(currentTime.getUTCDate()).padStart(2, '0');
+    const hour = String(currentTime.getUTCHours()).padStart(2, '0');
+    const minute = String(currentTime.getUTCMinutes()).padStart(2, '0');
+    const second = String(currentTime.getUTCSeconds()).padStart(2, '0');
+    
+    return `${year}. ${month}. ${day}. ${hour}:${minute}:${second}`;
+}
+
 // 로컬 스토리지 관련 함수들
 function saveStudentIdToStorage(id) {
     localStorage.setItem('studentId', id);
@@ -143,8 +158,8 @@ async function updateButtonVisibility() {
                 timeDisplay.innerHTML = `
                     <div style="color: blue;"><strong>✅ 오늘의 출석과 퇴실이 모두 완료되었습니다.</strong></div>
                     <div style="margin-bottom: 10px;"><strong>학번:</strong> ${studentId}</div>
-                    <div style="margin-bottom: 10px;"><strong>출석 시간:</strong> ${new Date(todayRecord.checkin_time).toLocaleString('ko-KR')}</div>
-                    <div><strong>퇴실 시간:</strong> ${new Date(todayRecord.checkout_time).toLocaleString('ko-KR')}</div>
+                    <div style="margin-bottom: 10px;"><strong>출석 시간:</strong> ${formatTimeString(todayRecord.checkin_time)}</div>
+                    <div><strong>퇴실 시간:</strong> ${formatTimeString(todayRecord.checkout_time)}</div>
                 `;
             }
         }
@@ -311,7 +326,7 @@ checkinBtn.addEventListener('click', async function() {
         
         if (existingCheck && existingCheck.length > 0) {
             const existingRecord = existingCheck[0];
-            const checkinTime = new Date(existingRecord.checkin_time).toLocaleString('ko-KR');
+            const checkinTime = formatTimeString(existingRecord.checkin_time);
             timeDisplay.innerHTML = `
                 <div style="color: orange;"><strong>⚠️ 이미 오늘 출석한 기록이 있습니다.</strong></div>
                 <div style="margin-bottom: 10px;"><strong>학번:</strong> ${studentId}</div>
