@@ -177,7 +177,7 @@ async function loadCheckData() {
         console.log('테이블 업데이트 완료:', data.length + '건');
         
         // 마지막 업데이트 시간 표시 (선택사항)
-        const lastUpdate = new Date().toISOString();
+        const lastUpdate = formatTime(new Date().toISOString());
         console.log('마지막 업데이트:', lastUpdate);
         
     } catch (error) {
@@ -230,7 +230,9 @@ function exportData() {
         XLSX.utils.book_append_sheet(wb, ws, '출석현황');
         
         // 파일명 생성 (현재 날짜 포함)
-        const fileName = `제일고등학교_야간자율학습_출석현황_${new Date().toISOString().split('T')[0]}.xlsx`;
+        const today = new Date();
+        const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        const fileName = `제일고등학교_야간자율학습_출석현황_${dateStr}.xlsx`;
         
         // Excel 파일 다운로드
         XLSX.writeFile(wb, fileName);
@@ -288,13 +290,7 @@ async function loadCurrentCode() {
         // 생성 시간 정보 업데이트
         const codeInfo = document.querySelector('.code-info');
         if (codeInfo) {
-            const createdDate = new Date(currentCode.created_at);
-            const year = createdDate.getFullYear();
-            const month = String(createdDate.getMonth() + 1).padStart(2, '0');
-            const day = String(createdDate.getDate()).padStart(2, '0');
-            const hour = String(createdDate.getHours()).padStart(2, '0');
-            const minute = String(createdDate.getMinutes()).padStart(2, '0');
-            const timeString = `${year}. ${month}. ${day}. ${hour}:${minute}`;
+            const timeString = formatTime(currentCode.created_at);
             codeInfo.textContent = `생성 시간: ${timeString}`;
         }
         
