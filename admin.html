@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-    <div class="admin-container">
+    <div class="admin-container" style="display:none;">
         <!-- 학교 로고 및 제목 영역 -->
         <div class="school-header">
             <div class="school-logo">
@@ -52,6 +52,36 @@
             </table>
         </div>
     </div>
+    
+    <!-- 비밀번호 입력 모달 -->
+    <div id="passwordModal" class="modal" style="display:flex;">
+        <div class="modal-content login-modal">
+            <!-- 학교 로고 및 제목 영역 -->
+            <div class="school-header">
+                <div class="school-logo">
+                    <img src="assets/logo.webp" alt="제일고등학교 로고" class="logo-image">
+                </div>
+                <div class="school-title">
+                    <h1>제일고등학교</h1>
+                    <h2>야간자율학습 관리자 페이지</h2>
+                </div>
+            </div>
+            
+            <div class="login-section">
+                <h3>관리자 인증</h3>
+                <div class="password-input-section">
+                    <label for="passwordInput">비밀번호:</label>
+                    <input type="password" id="passwordInput" placeholder="관리자 비밀번호를 입력하세요" />
+                    <div id="passwordError"></div>
+                </div>
+                <div class="modal-actions">
+                    <button id="passwordSubmit" class="login-btn">로그인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Supabase CDN -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="js/admin.js"></script>

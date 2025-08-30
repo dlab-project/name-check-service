@@ -2,6 +2,99 @@ const SUPABASE_URL = 'https://avdxuubamsjuwwojqonb.supabase.co';
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2ZHh1dWJhbXNqdXd3b2pxb25iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MjI1MjcsImV4cCI6MjA3MDI5ODUyN30.KvZZyC44-0_scfXVv55S9DGskCFmBP378Ke_ZwUUi9w";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// 관리자 비밀번호 (실제 운영 시에는 환경변수나 보안된 방식으로 관리해야 함)
+const ADMIN_PASSWORD = 'admin1234';
+
+// 인증 상태 변수
+let isAuthenticated = false;
+
+// 비밀번호 인증 함수
+function authenticateUser(password) {
+    return password === ADMIN_PASSWORD;
+}
+
+// 비밀번호 모달 표시/숨김 함수
+function showPasswordModal() {
+    const modal = document.getElementById('passwordModal');
+    const input = document.getElementById('passwordInput');
+    const error = document.getElementById('passwordError');
+    
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+    if (error) {
+        error.style.display = 'none';
+    }
+}
+
+function hidePasswordModal() {
+    const modal = document.getElementById('passwordModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// 비밀번호 오류 메시지 표시
+function showPasswordError(message) {
+    const errorDiv = document.getElementById('passwordError');
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+}
+
+// 인증 성공 시 처리
+function onAuthenticationSuccess() {
+    isAuthenticated = true;
+    hidePasswordModal();
+    
+    // 메인 컨테이너 표시
+    const mainContainer = document.querySelector('.admin-container');
+    if (mainContainer) {
+        mainContainer.style.display = 'block';
+    }
+    
+    // 초기 데이터 로드
+    loadCheckData();
+    loadCurrentCode();
+    
+    // 이벤트 리스너 설정
+    setupEventListeners();
+    
+    console.log('관리자 인증 성공');
+}
+
+// 인증 실패 시 처리
+function onAuthenticationFailure() {
+    showPasswordError('비밀번호가 올바르지 않습니다.');
+    const input = document.getElementById('passwordInput');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+}
+
+// 비밀번호 제출 처리
+function handlePasswordSubmit() {
+    const passwordInput = document.getElementById('passwordInput');
+    const password = passwordInput.value.trim();
+    
+    if (!password) {
+        showPasswordError('비밀번호를 입력해주세요.');
+        return;
+    }
+    
+    if (authenticateUser(password)) {
+        onAuthenticationSuccess();
+    } else {
+        onAuthenticationFailure();
+    }
+}
+
 // 시간 포맷팅 함수
 function formatTime(isoTimeString) {
     if (!isoTimeString) return '-';
@@ -252,12 +345,38 @@ function showCodeUpdateSuccess(newCode) {
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
-    // 초기 데이터 로드
-    loadCheckData();
+    // 비밀번호 모달 표시
+    showPasswordModal();
     
-    // 현재 출석코드 로드
-    loadCurrentCode();
+    // 비밀번호 제출 버튼 이벤트 리스너
+    const passwordSubmitBtn = document.getElementById('passwordSubmit');
+    if (passwordSubmitBtn) {
+        passwordSubmitBtn.addEventListener('click', handlePasswordSubmit);
+    }
     
+    // 비밀번호 입력 필드 엔터키 이벤트
+    const passwordInput = document.getElementById('passwordInput');
+    if (passwordInput) {
+        passwordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                handlePasswordSubmit();
+            }
+        });
+    }
+    
+    // 비밀번호 모달 외부 클릭 시 숨김
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('passwordModal');
+        if (modal && event.target == modal) {
+            hidePasswordModal();
+        }
+    });
+    
+    console.log('관리자 페이지 초기화 완료');
+});
+
+// 인증 후 이벤트 리스너 설정 함수
+function setupEventListeners() {
     // 데이터 내보내기 버튼 이벤트 리스너
     const exportBtn = document.getElementById('exportBtn');
     if (exportBtn) {
@@ -270,5 +389,5 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCodeBtn.addEventListener('click', updateCode);
     }
     
-    console.log('관리자 페이지 초기화 완료');
-});
+    console.log('이벤트 리스너 설정 완료');
+}
