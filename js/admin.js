@@ -266,7 +266,7 @@ function showCodeUpdateSuccess(newCode) {
         updateBtn.style.background = 'var(--color-success)';
         
         setTimeout(() => {
-            updateBtn.textContent = originalText;
+            updateBtn.textContent = '코드 갱신하기';
             updateBtn.style.background = '';
         }, 3000);
     }
