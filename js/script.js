@@ -284,7 +284,7 @@ checkinBtn.addEventListener('click', async function() {
     
     try {
         // 한국 시간으로 변환 (UTC+9)
-        const currentTime = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+        const currentTime = new Date();
         
         // 오늘 날짜만 추출 (YYYY-MM-DD 형식)
         const today = currentTime.toISOString().split('T')[0];
@@ -383,7 +383,7 @@ async function handleCheckout() {
     checkoutBtn.textContent = '퇴실체크 중...';
     try {
         // 한국 시간으로 변환 (UTC+9)
-        const currentTime = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+        const currentTime = new Date();
         // 시간 문자열 직접 생성
         const year = currentTime.getUTCFullYear();
         const month = String(currentTime.getUTCMonth() + 1).padStart(2, '0');
