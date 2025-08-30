@@ -95,18 +95,19 @@ function handlePasswordSubmit() {
     }
 }
 
-// 시간 포맷팅 함수
+// 시간 포맷팅 함수 (기본 형태)
 function formatTime(isoTimeString) {
     if (!isoTimeString) return '-';
     const date = new Date(isoTimeString);
-    return date.toLocaleString('ko-KR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+    const second = String(date.getSeconds()).padStart(2, '0');
+    
+    return `${year}. ${month}. ${day}. ${hour}:${minute}:${second}`;
 }
 
 // 상태 표시 함수
@@ -176,7 +177,7 @@ async function loadCheckData() {
         console.log('테이블 업데이트 완료:', data.length + '건');
         
         // 마지막 업데이트 시간 표시 (선택사항)
-        const lastUpdate = new Date().toLocaleString('ko-KR');
+        const lastUpdate = new Date().toISOString();
         console.log('마지막 업데이트:', lastUpdate);
         
     } catch (error) {
@@ -288,13 +289,12 @@ async function loadCurrentCode() {
         const codeInfo = document.querySelector('.code-info');
         if (codeInfo) {
             const createdDate = new Date(currentCode.created_at);
-            const timeString = createdDate.toLocaleString('ko-KR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            const year = createdDate.getFullYear();
+            const month = String(createdDate.getMonth() + 1).padStart(2, '0');
+            const day = String(createdDate.getDate()).padStart(2, '0');
+            const hour = String(createdDate.getHours()).padStart(2, '0');
+            const minute = String(createdDate.getMinutes()).padStart(2, '0');
+            const timeString = `${year}. ${month}. ${day}. ${hour}:${minute}`;
             codeInfo.textContent = `생성 시간: ${timeString}`;
         }
         
