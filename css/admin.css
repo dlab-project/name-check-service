@@ -331,6 +331,72 @@ body {
     transform: translateY(0);
 }
 
+/* 테이블 섹션 */
+.table-section {
+    margin-top: 20px;
+}
+
+/* 테이블 헤더 */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 0 4px;
+}
+
+.table-header h3 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* 새로고침 버튼 */
+.refresh-btn {
+    background: var(--color-muted-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: var(--color-subtext);
+}
+
+.refresh-btn:hover {
+    background: var(--color-school);
+    color: white;
+    border-color: var(--color-school);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.refresh-btn:active {
+    transform: translateY(0) rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+.refresh-btn:disabled {
+    background: var(--color-border);
+    color: var(--color-subtext);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.refresh-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.refresh-btn:hover svg {
+    transform: rotate(45deg);
+}
+
 /* 테이블 컨테이너 */
 .table-container {
     background: var(--color-surface);
@@ -511,6 +577,21 @@ body {
     .table-container {
         overflow-x: auto;
     }
+    
+    .table-header h3 {
+        font-size: 18px;
+    }
+    
+    .refresh-btn {
+        width: 32px;
+        height: 32px;
+        padding: 6px;
+    }
+    
+    .refresh-btn svg {
+        width: 16px;
+        height: 16px;
+    }
 }
 
 /* 작은 모바일 화면 (320px ~ 480px) */
@@ -598,5 +679,20 @@ body {
         padding: 10px 14px; 
         font-size: 15px; 
         min-height: 42px; 
+    }
+    
+    .table-header h3 {
+        font-size: 16px;
+    }
+    
+    .refresh-btn {
+        width: 30px;
+        height: 30px;
+        padding: 5px;
+    }
+    
+    .refresh-btn svg {
+        width: 14px;
+        height: 14px;
     }
 }

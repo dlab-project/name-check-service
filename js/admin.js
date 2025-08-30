@@ -118,10 +118,14 @@ function getStatusText(checkinTime, checkoutTime) {
 
 async function loadCheckData() {
     try {
+        console.log('데이터 로드 시작:', new Date().toISOString());
+        
+        // 캐시 방지를 위한 쿼리 (실시간 데이터 가져오기)
         const { data, error } = await supabase
             .from('check')
             .select('*')
-            .order('checkin_time', { ascending: false });
+            .order('checkin_time', { ascending: false })
+            .limit(1000); // 최대 1000건으로 제한하여 성능 최적화
             
         if (error) {
             console.error('데이터 조회 오류:', error);
@@ -129,15 +133,27 @@ async function loadCheckData() {
             return;
         }
         
+        console.log('DB에서 가져온 데이터:', {
+            총건수: data ? data.length : 0,
+            첫번째데이터: data && data.length > 0 ? data[0] : null,
+            조회시간: new Date().toISOString()
+        });
+        
         const tbody = document.querySelector('#checkTable tbody');
+        if (!tbody) {
+            console.error('테이블 tbody 요소를 찾을 수 없습니다.');
+            return;
+        }
+        
         tbody.innerHTML = '';
         
         if (!data || data.length === 0) {
             tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #666;">출석 데이터가 없습니다.</td></tr>';
+            console.log('출석 데이터가 없습니다.');
             return;
         }
         
-        data.forEach(row => {
+        data.forEach((row, index) => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><strong>${row.student_id}</strong></td>
@@ -146,12 +162,26 @@ async function loadCheckData() {
                 <td>${getStatusText(row.checkin_time, row.checkout_time)}</td>
             `;
             tbody.appendChild(tr);
+            
+            // 처음 5개 데이터만 로그 출력
+            if (index < 5) {
+                console.log(`행 ${index + 1}:`, {
+                    학번: row.student_id,
+                    출석시간: row.checkin_time,
+                    퇴실시간: row.checkout_time
+                });
+            }
         });
         
-        console.log('데이터 로드 완료:', data.length + '건');
+        console.log('테이블 업데이트 완료:', data.length + '건');
+        
+        // 마지막 업데이트 시간 표시 (선택사항)
+        const lastUpdate = new Date().toLocaleString('ko-KR');
+        console.log('마지막 업데이트:', lastUpdate);
+        
     } catch (error) {
         console.error('데이터 로드 중 오류:', error);
-        alert('데이터 로드 중 오류가 발생했습니다.');
+        alert('데이터 로드 중 오류가 발생했습니다: ' + error.message);
     }
 }
 
@@ -375,6 +405,59 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('관리자 페이지 초기화 완료');
 });
 
+// 새로고침 기능
+async function refreshData() {
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) {
+        refreshBtn.disabled = true;
+        refreshBtn.style.transform = 'rotate(180deg)';
+    }
+    
+    try {
+        console.log('=== 수동 새로고침 시작 ===');
+        console.log('새로고침 시간:', new Date().toISOString());
+        
+        // Supabase 연결 상태 확인
+        console.log('Supabase 클라이언트 상태:', {
+            url: supabase.supabaseUrl,
+            key: supabase.supabaseKey ? '설정됨' : '설정안됨'
+        });
+        
+        // 강제로 데이터 다시 로드
+        await loadCheckData();
+        
+        // 출석코드도 함께 새로고침
+        await loadCurrentCode();
+        
+        console.log('=== 새로고침 완료 ===');
+        
+        // 성공 애니메이션
+        if (refreshBtn) {
+            refreshBtn.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                refreshBtn.style.transform = '';
+            }, 300);
+        }
+        
+        // 성공 메시지를 콘솔과 일시적으로 버튼에 표시
+        if (refreshBtn) {
+            const originalTitle = refreshBtn.title;
+            refreshBtn.title = '새로고침 완료!';
+            setTimeout(() => {
+                refreshBtn.title = originalTitle;
+            }, 2000);
+        }
+        
+    } catch (error) {
+        console.error('데이터 새로고침 오류:', error);
+        alert('데이터 새로고침 중 오류가 발생했습니다: ' + error.message);
+    } finally {
+        if (refreshBtn) {
+            refreshBtn.disabled = false;
+        }
+    }
+}
+
 // 인증 후 이벤트 리스너 설정 함수
 function setupEventListeners() {
     // 데이터 내보내기 버튼 이벤트 리스너
@@ -387,6 +470,12 @@ function setupEventListeners() {
     const updateCodeBtn = document.getElementById('updateCodeBtn');
     if (updateCodeBtn) {
         updateCodeBtn.addEventListener('click', updateCode);
+    }
+    
+    // 새로고침 버튼 이벤트 리스너
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', refreshData);
     }
     
     console.log('이벤트 리스너 설정 완료');
