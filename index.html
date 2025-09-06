@@ -38,7 +38,7 @@
     <div id="studentIdModal" class="modal" style="display:none;">
         <div class="modal-content">
             <h2>학번 입력</h2>
-            <input type="text" id="studentIdInput" placeholder="학번을 입력하세요" />
+            <input type="text" id="studentIdInput" placeholder="학번을 입력하세요" maxlength="5" />
             <div id="studentIdError"></div>
             <div class="modal-actions">
                 <button id="studentIdSubmit">확인</button>
@@ -63,6 +63,7 @@
     
     <!-- Supabase CDN -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/studentIdValidator.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>

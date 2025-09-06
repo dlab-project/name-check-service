@@ -5,8 +5,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 // 학번 저장 변수
 let studentId = '';
 
-
-
 // 시간 변환 함수 (DB 시간을 한국 시간 문자열로 변환)
 function formatTimeString(isoTimeString) {
     // DB에서 온 ISO 시간 문자열을 한국 시간으로 변환
@@ -330,13 +328,14 @@ function hideStudentIdModal() {
 
 document.getElementById('studentIdSubmit').addEventListener('click', function() {
     const input = document.getElementById('studentIdInput').value;
-    if (!input || input.trim() === '') {
-        document.getElementById('studentIdError').textContent = '올바른 학번을 입력해주세요.';
-        document.getElementById('studentIdError').style.display = 'block';
-        return;
-    }
+    const errorDiv = document.getElementById('studentIdError');
     
     const newStudentId = input.trim();
+    
+    // 공통 검증 함수 사용
+    if (!validateAndShowError(newStudentId, errorDiv)) {
+        return;
+    }
     
     // 기존 학번이 있고, 새로운 학번과 다른 경우 확인 절차
     if (studentId && studentId !== newStudentId) {
@@ -384,12 +383,35 @@ document.getElementById('studentIdInput').addEventListener('keydown', function(e
     ) {
         e.preventDefault();
     }
+    
+    // 5자리 초과 입력 방지 (숫자 키 입력 시)
+    if ((e.key >= '0' && e.key <= '9') && this.value.length >= 5) {
+        e.preventDefault();
+    }
+    
     if (e.key === 'Enter') {
         document.getElementById('studentIdSubmit').click();
     }
-// 입력값이 숫자가 아닌 경우 자동으로 제거
+// 입력값이 숫자가 아닌 경우 자동으로 제거 및 실시간 검증
 document.getElementById('studentIdInput').addEventListener('input', function(e) {
+    // 숫자가 아닌 문자 제거
     this.value = this.value.replace(/[^0-9]/g, '');
+    
+    // 5자리 초과 시 자동으로 잘라내기
+    if (this.value.length > 5) {
+        this.value = this.value.substring(0, 5);
+    }
+    
+    const errorDiv = document.getElementById('studentIdError');
+    
+    // 5자리 입력 시 실시간 검증
+    if (this.value.length === 5) {
+        // 공통 검증 함수 사용
+        validateAndShowError(this.value, errorDiv);
+    } else if (this.value.length < 5) {
+        // 5자리 미만일 때는 에러 메시지 숨김
+        errorDiv.style.display = 'none';
+    }
 });
 });
 
@@ -399,6 +421,12 @@ const timeDisplay = document.getElementById('timeDisplay');
 
 checkinBtn.addEventListener('click', async function() {
     if (!studentId || studentId.trim() === '') {
+        showStudentIdModal();
+        return;
+    }
+    
+    // 공통 검증 함수 사용
+    if (!validateForAttendance(studentId, '출석체크')) {
         showStudentIdModal();
         return;
     }
@@ -508,6 +536,13 @@ checkoutBtn.addEventListener('click', function() {
         showStudentIdModal();
         return;
     }
+    
+    // 공통 검증 함수 사용
+    if (!validateForAttendance(studentId, '퇴실체크')) {
+        showStudentIdModal();
+        return;
+    }
+    
     // 스토리지에 있는 학번으로 퇴실체크 처리
     handleCheckout();
 });
